@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// map append问题
 func TransformResultFormat(columns []string, values [][]string) {
 
 	var result []map[string]interface{}
@@ -33,6 +34,7 @@ func TestMapTransfor(t *testing.T) {
 	TransformResultFormat(c, v)
 }
 
+// 字节面试题：台阶积水问题
 // 忽略第0个台阶，从第1个台阶开始算，后边台阶如果矮于第一个台阶，差值即为积水量，
 // 直到高于第一个台阶的新台阶出现，第一次循环结束，
 // 然后从这个新台阶开始第二次循环
@@ -79,6 +81,8 @@ var (
 	}
 	res = []string{}
 )
+
+// LeetCode-cookbook-17：根据手机数字按钮返回对应数字可生成的所有字母组合
 func letterCombinations(digits string) []string {
 	if digits == "" {
 		return []string{}
