@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// 冒泡排序
+// 冒泡排序：依次比较相邻两元素，每轮循环挑出最大值置于数组末尾
 func Bubble(arr []int) {
 	size := len(arr)
 	var swapped bool
@@ -25,7 +25,7 @@ func Bubble(arr []int) {
 	}
 }
 
-// 选择排序
+// 选择排序：第一个元素依次与每个元素比较，每轮循环挑出最小值置于数组开头
 func SelectSort(arr []int) {
 	for i := 0; i < len(arr)-1; i++ {
 		for j := i + 1; j <= len(arr)-1; j++ {
@@ -38,7 +38,7 @@ func SelectSort(arr []int) {
 	}
 }
 
-// 插入排序
+// 插入排序：认为第一个元素为有序数列，其他元素依次与之前的元素比较，大于插入右侧，小于插入左侧
 func InsertSort(arr []int) {
 	for i := 1; i <= len(arr)-1; i++ {
 		for j := i; j > 0; j-- {
@@ -49,22 +49,56 @@ func InsertSort(arr []int) {
 	}
 }
 
-// 快速排序
-func QuickSort(arr []int, l, r int) {
-	if l < r {
-		pivot := arr[r]
-		i := l - 1
-		for j := l; j < r; j++ {
+// 快速排序：选中一个基准值，使得其左侧所有元素小于它，右侧大于它，从基准值位置将数组分为两部分，递归排序
+func QuickSort(arr []int, begin, end int) {
+	if begin < end {
+		// 基准值
+		pivot := arr[end]
+		i := begin - 1
+		// 大数右移，小数左移
+		for j := begin; j < end; j++ {
 			if arr[j] <= pivot {
 				i++
 				arr[j], arr[i] = arr[i], arr[j]
 			}
 		}
+		// 找到了中间位置
 		i++
-		arr[r], arr[i] = arr[i], arr[r]
-		QuickSort(arr, l, i-1)
-		QuickSort(arr, i+1, r)
+		// 将基准值pivot移到中间
+		arr[end], arr[i] = arr[i], arr[end]
+		QuickSort(arr, begin, i-1)
+		QuickSort(arr, i+1, end)
 	}
+}
+
+// 快速排序：这种写法更易理解
+func quickSort(arr []int, start, end int) {
+    if start < end {
+        i, j := start, end
+        pivot := arr[(start+end)/2]
+        for i <= j {
+            for arr[i] < pivot {
+                i++
+            }
+            for arr[j] > pivot {
+                j--
+			}
+			// 大数右移，小数左移
+            if i <= j {
+                arr[i], arr[j] = arr[j], arr[i]
+                i++
+                j--
+            }
+        }
+ 
+		//经过最后一次循环计算，j缩小为中轴前一位，i增大为中轴后一位
+        if start < j {
+            quickSort(arr, start, j)
+        }
+        if end > i {
+            quickSort(arr, i, end)
+        }
+    }
 }
 
 // 合并
@@ -119,7 +153,7 @@ func adjustHeap(arr []int, i, size int) {
 		}
 		if m != i {
 			arr[m], arr[i] = arr[i], arr[m]
-			adjust_heap(arr, m, size)
+			adjustHeap(arr, m, size)
 		}
 	}
 }
@@ -129,7 +163,7 @@ func buildHeap(arr []int) {
 	size := len(arr)
 	//从最后一个子节点开始向前调整
 	for i := (size - 2) / 2; i >= 0; i-- {
-		adjust_heap(arr, i, size)
+		adjustHeap(arr, i, size)
 	}
 }
 
@@ -171,4 +205,22 @@ func TestMySort(t *testing.T) {
 	end := time.Now().UnixNano()
 	fmt.Printf("end time: %v \n", end)
 	fmt.Printf("time cost: %v", end-start)
+}
+
+// 二分查找
+func binarySearch(sortedArray []int, target int) int {
+    low := 0
+    high := len(sortedArray) - 1
+    for low <= high {
+        mid :=low + (high - low)/2
+        midValue := sortedArray[mid]
+        if midValue < target {
+			low = mid + 1
+        } else if midValue > target {
+            high = mid -1
+        } else {
+            return mid
+        }
+    }
+    return -1
 }
