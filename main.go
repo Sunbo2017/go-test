@@ -2,43 +2,57 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net/http"
-	"sync"
 
-	"github.com/gorilla/mux"
+	// "github.com/gorilla/mux"
+	pdfp "go-test/pdfparser"
+
 	"github.com/gorilla/schema"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	log.Info("Server started")
+	page := flag.Int("page", 0, "the page number of pdf which you want to convert")
+	pdfPath := flag.String("pdf", "", "the path of pdf file which you want to convert")
+	txtPath := flag.String("txt", "", "the path of tet file which you want to save")
+
+	flag.Parse()
+
+	if *pdfPath == "" {
+		panic("Please input the pdf file path!")
+	}
+
+	pdf := new(pdfp.PdfReader)
+	pdf.PdfPath = *pdfPath
+	pdf.TextPath = *txtPath
+	pdf.CurPage = *page
+
+	pdf.Load()
+
+	if pdf.CurPage > 0 {
+		pdf.ReadCurrentPageContent()
+	}
+
+	if pdf.TextPath != "" {
+		pdf.WriteContent()
+	}
+
+	fmt.Println("pdf parse success")
 
 	// register router
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/api/test/post", MyPostHandler).Methods("POST")
+	// router := mux.NewRouter().StrictSlash(true)
+	// router.HandleFunc("/api/test/post", MyPostHandler).Methods("POST")
 
-	// start server listening
-	err := http.ListenAndServe(":8080", router)
-	if err != nil {
-		log.Fatalln("ListenAndServe err:", err)
-	}
+	// // start server listening
+	// err := http.ListenAndServe(":8080", router)
+	// if err != nil {
+	// 	log.Fatalln("ListenAndServe err:", err)
+	// }
 
-	var lo sync.Mutex
-	var nums int
-	total := 0
-	for i := 1; i <= 10; i++ {
-		nums += i
-		lo.Lock()
-		go func() {
-			total += i
-			lo.Unlock()
-		}()
-	}
-	log.Printf("sum:%d", nums)
-	log.Printf("total:%d", total)
-
-	log.Println("Server end")
+	// log.Println("Server end")
 }
 
 type Asd struct {
