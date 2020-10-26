@@ -15,6 +15,23 @@ import (
 
 func main() {
 	log.Info("Server started")
+
+	// runPdfParser()
+
+	// register router
+	// router := mux.NewRouter().StrictSlash(true)
+	// router.HandleFunc("/api/test/post", MyPostHandler).Methods("POST")
+
+	// // start server listening
+	// err := http.ListenAndServe(":8080", router)
+	// if err != nil {
+	// 	log.Fatalln("ListenAndServe err:", err)
+	// }
+
+	// log.Println("Server end")
+}
+
+func runPdfParser() {
 	page := flag.Int("page", 0, "the page number of pdf which you want to convert")
 	pdfPath := flag.String("pdf", "", "the path of pdf file which you want to convert")
 	txtPath := flag.String("txt", "", "the path of tet file which you want to save")
@@ -41,18 +58,6 @@ func main() {
 	}
 
 	fmt.Println("pdf parse success")
-
-	// register router
-	// router := mux.NewRouter().StrictSlash(true)
-	// router.HandleFunc("/api/test/post", MyPostHandler).Methods("POST")
-
-	// // start server listening
-	// err := http.ListenAndServe(":8080", router)
-	// if err != nil {
-	// 	log.Fatalln("ListenAndServe err:", err)
-	// }
-
-	// log.Println("Server end")
 }
 
 type Asd struct {

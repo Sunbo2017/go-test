@@ -5,7 +5,7 @@ import (
 	"os"
 	"io/ioutil"
 	"github.com/unidoc/unipdf/v3/extractor"
-	pdf "github.com/unidoc/unipdf/v3/model"
+	pdf "github.com/unidoc/unipdf/v3/model" // not free,need to buy license
 )
 
 // PdfReader pdf struct
