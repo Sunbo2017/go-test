@@ -35,6 +35,7 @@ func judgeTypeByInterface(actual interface{}){
 	}
 }
 
+// go test -bench=BenchmarkReflect -run=none -cpu 1,2,4
 func BenchmarkReflect(b *testing.B){
 	fmt.Printf("b.n: %v\n", b.N)
 	for i := 0; i < b.N; i++ {
@@ -42,6 +43,7 @@ func BenchmarkReflect(b *testing.B){
 	}
 }
 
+// go test -bench=BenchmarkInterface -run=none -cpu 1,2,4
 func BenchmarkInterface(b *testing.B){
 	fmt.Printf("b.n: %v\n", b.N)
 	for i := 0; i < b.N; i++ {
