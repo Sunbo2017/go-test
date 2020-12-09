@@ -9,6 +9,8 @@ import (
 	// "github.com/gorilla/mux"
 	pdfp "go-test/pdfparser"
 
+	smart "go-test/smart"
+
 	"github.com/gorilla/schema"
 	log "github.com/sirupsen/logrus"
 )
@@ -29,6 +31,7 @@ func main() {
 	// }
 
 	// log.Println("Server end")
+	smart.PrintSMART()
 }
 
 func runPdfParser() {
