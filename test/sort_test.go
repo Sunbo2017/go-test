@@ -8,6 +8,7 @@ import (
 )
 
 // 冒泡排序：依次比较相邻两元素，每轮循环挑出最大值置于数组末尾
+// 时间复杂度：O(N^2)
 func Bubble(arr []int) {
 	size := len(arr)
 	var swapped bool
@@ -26,6 +27,7 @@ func Bubble(arr []int) {
 }
 
 // 选择排序：第一个元素依次与每个元素比较，每轮循环挑出最小值置于数组开头
+// 时间复杂度：O(N^2)
 func SelectSort(arr []int) {
 	for i := 0; i < len(arr)-1; i++ {
 		for j := i + 1; j <= len(arr)-1; j++ {
@@ -39,6 +41,7 @@ func SelectSort(arr []int) {
 }
 
 // 插入排序：认为第一个元素为有序数列，其他元素依次与之前的元素比较，大于插入右侧，小于插入左侧
+// 时间复杂度：O(N^2)
 func InsertSort(arr []int) {
 	for i := 1; i <= len(arr)-1; i++ {
 		for j := i; j > 0; j-- {
@@ -52,6 +55,7 @@ func InsertSort(arr []int) {
 }
 
 // 快速排序：选中一个基准值，使得其左侧所有元素小于它，右侧大于它，从基准值位置将数组分为两部分，递归排序
+// 时间复杂度：O(N*logN)
 func QuickSort(arr []int, begin, end int) {
 	if begin < end {
 		// 基准值
@@ -74,6 +78,7 @@ func QuickSort(arr []int, begin, end int) {
 }
 
 // 快速排序：这种写法更易理解
+// 时间复杂度：O(N*logN)
 func quickSort(arr []int, start, end int) {
     if start < end {
         i, j := start, end
@@ -132,6 +137,7 @@ func Merge(arr []int, l, mid, r int) {
 }
 
 //归并排序
+// 时间复杂度：O(N*logN)
 func MergeSort(arr []int, l, r int) {
 	if l < r {
 		mid := (l + r - 1) / 2
@@ -170,6 +176,7 @@ func buildHeap(arr []int) {
 }
 
 // 堆排序
+// 时间复杂度：O(N*logN)
 func HeapSort(arr []int) {
 	size := len(arr)
 	buildHeap(arr)
