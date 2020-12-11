@@ -42,8 +42,10 @@ func SelectSort(arr []int) {
 func InsertSort(arr []int) {
 	for i := 1; i <= len(arr)-1; i++ {
 		for j := i; j > 0; j-- {
-			if arr[j-1] > arr[j] {
+			if arr[j] < arr[j-1] {
 				arr[j-1], arr[j] = arr[j], arr[j-1]
+			} else{
+				break
 			}
 		}
 	}
@@ -180,14 +182,16 @@ func HeapSort(arr []int) {
 
 func TestMySort(t *testing.T) {
 	//数量级，控制参与排序的数字总量
-	num := 10000
+	num := 20
 	array := []int{}
 	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8, 10, 20, 50, 21, 16, 12, 18, 23, 30, 40, 32}
 	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8}
 	// 随机种子，不加的话每次产生的随机数相同
 	rand.Seed(time.Now().Unix())
 	for i := 0; i < num; i++ {
-		array = append(array, rand.Intn(num))
+		r := rand.Intn(num)
+		fmt.Println(r)
+		array = append(array, r)
 	}
 
 	start := time.Now().UnixNano()
@@ -196,15 +200,18 @@ func TestMySort(t *testing.T) {
 
 	// SelectSort(array) //数量级1000：3000300 ns 2998000 3007200 数量级10000：236098400
 	// Bubble(array) //数量级1000：3000400 ns 3000500 3001600 3000700 2009100 1994100 数量级10000：234680800 231802700
-	// InsertSort(array) //数量级1000：2000600 ns 1999600 2001000 2013600 数量级10000：148584200
+	InsertSort(array) //数量级1000：2000600 ns 1999600 2001000 2013600 数量级10000：148584200
 	// MergeSort(array, 0, len(array)-1) //数量级10000：3008000
 	// HeapSort(array) //数量级10000：2000200
-	QuickSort(array, 0, len(array)-1) //数量级10000：1000300
+	// QuickSort(array, 0, len(array)-1) //数量级10000：1000300
 
 	// fmt.Println(array)
 	end := time.Now().UnixNano()
 	fmt.Printf("end time: %v \n", end)
 	fmt.Printf("time cost: %v", end-start)
+	for i := 0; i < num; i++ {
+		fmt.Println(array[i])
+	}
 }
 
 // 二分查找
