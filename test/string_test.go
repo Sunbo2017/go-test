@@ -16,12 +16,14 @@ func max(a, b int) int {
 // LeetCode-cookbook-3： 查找最大不重复子串，返回其长度
 // 位图法：位图就是bitmap的缩写，所谓bitmap，是用每一个bit位来存放某种状态，
 // 位图适用于大规模数据，但数据状态又不是很多的情况。通常是用来判断某个数据存不存在的。
+// 滑动窗口思想
 func longestSubstring(s string) int {
 	if len(s) == 0 {
 		return 0
 	}
 	// 扩展 ASCII 码的位图表示（BitSet），共有 256 位
 	var bitSet [256]uint8
+	// 结果，窗口起点和终点
 	result, left, right := 0, 0, 0
 	for left < len(s) {
 		if right < len(s) && bitSet[s[right]] == 0 {
@@ -40,7 +42,8 @@ func longestSubstring(s string) int {
 }
 
 func TestLongestSubstring(t *testing.T) {
-	s := "pwwkew"
+	// s := "pwwkew"
+	s := "abccbb"
 	l := longestSubstring(s)
 	fmt.Println(l)
 }
