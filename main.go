@@ -31,7 +31,7 @@ func main() {
 	// }
 
 	// log.Println("Server end")
-	smart.PrintSMART()
+	smart.Consume()
 }
 
 func runPdfParser() {

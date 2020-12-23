@@ -52,6 +52,8 @@ type finalSmartAttr struct {
 }
 
 type FinalSmartInfo struct {
+	DiskMD  string			 `json: "disk_md"`
+	DiskSN  string           `json: "disk_sn"`
 	Version uint16           `json: "version"`
 	Attrs   []finalSmartAttr `json: "attrs"`
 }
@@ -325,9 +327,36 @@ func getAttrBytes() []byte {
 	return attrBytes[:362]
 }
 
-func PrintSMART() {
-	attrBytes := getAttrBytes()
-	smartMap := GetSmartMapByBytes(attrBytes[2:])
+//GetSmartFromJSON receive a json byte,parse to smart struct
+func GetSmartFromJSON(byteJson []byte) error{
+	jsonMap := make(map[string]string)
+	if err := json.Unmarshal(byteJson, &jsonMap); err != nil{
+		fmt.Println(err)
+		return err
+	}
+	diskSN := jsonMap["disk_sn"]
+	diskMD := jsonMap["disk_md"]
+	smartStr := jsonMap["details"]
+	decodeBytes, err := base64.StdEncoding.DecodeString(smartStr)
+	fmt.Println(decodeBytes)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	version := uint16(decodeBytes[0])
+
+	finalSmartInfo := parseSmartAttr(decodeBytes[2:362])
+	finalSmartInfo.Version = version
+	finalSmartInfo.DiskMD = diskMD
+	finalSmartInfo.DiskSN = diskSN
+
+	jsonResult, err := json.Marshal(finalSmartInfo)
+	fmt.Println(string(jsonResult))
+
+	return err
+}
+
+func parseSmartAttr(attrBytes []byte) FinalSmartInfo {
+	smartMap := GetSmartMapByBytes(attrBytes)
 
 	db, err := OpenDriveDb("./smart/drivedb.yaml")
 	if err != nil {
@@ -344,7 +373,7 @@ func PrintSMART() {
 	// fmt.Printf("ID# ATTRIBUTE_NAME           FLAG     VALUE WORST THRESHOLD TYPE     UPDATED RAW_VALUE\n")
 
 	finalSmartInfo := FinalSmartInfo{}
-	finalSmartInfo.Version = uint16(attrBytes[0])
+	// finalSmartInfo.Version = uint16(attrBytes[0])
 	for _, attr := range smart.Attrs {
 		var (
 			rawValue              uint64
@@ -399,6 +428,5 @@ func PrintSMART() {
 		// 	attrUpdated, formatRawValue(rawValue, conv.Conv))
 	}
 
-	jsonResult, _ := json.Marshal(finalSmartInfo)
-	fmt.Println(string(jsonResult))
+	return finalSmartInfo
 }

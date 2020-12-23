@@ -75,9 +75,18 @@ func strStr(s1, s2 string) int {
 	}
 }
 
-func TestStrStr(t *testing.T){
+func TestStrStr(t *testing.T) {
 	s1 := "GodBlessYou"
 	s2 := "less"
 	fmt.Println(strings.Index(s1, s2))
 	fmt.Println(strStr(s1, s2))
+}
+
+func TestCompare(t *testing.T) {
+	s1 := "1.6"
+	s2 := "1.7"
+	//直接比较时，从左至右逐个字符根据ASCII码值大小比较
+	fmt.Println(s1 > s2) //flase
+	// 如果待比较的字符串位数不等，则可能会出错
+	fmt.Println("3" > "15") //true
 }
