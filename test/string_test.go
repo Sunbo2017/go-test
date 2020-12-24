@@ -31,12 +31,13 @@ func longestSubstring(s string) int {
 			bitSet[s[right]] = 1
 			right++
 		} else {
-			//将已比较过不满足要求的位值归0，开始下一轮查找
+			//将已比较过的left位值归0，开始下一轮查找
 			bitSet[s[left]] = 0
+			fmt.Println(s[left:right])
 			left++
 		}
 		result = max(result, right-left)
-		fmt.Println(s[left:right])
+		// fmt.Println(s[left:right])
 	}
 	return result
 }
