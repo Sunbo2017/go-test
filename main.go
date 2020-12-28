@@ -10,6 +10,7 @@ import (
 	pdfp "go-test/pdfparser"
 
 	smart "go-test/smart"
+	"go-test/initial"
 
 	"github.com/gorilla/schema"
 	log "github.com/sirupsen/logrus"
@@ -17,6 +18,8 @@ import (
 
 func main() {
 	log.Info("Server started")
+
+	initial.InitMongo()
 
 	// runPdfParser()
 
