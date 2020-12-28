@@ -11,8 +11,9 @@ require (
 	github.com/streadway/amqp v1.0.0
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/unidoc/unipdf/v3 v3.13.0
+	go.mongodb.org/mongo-driver v1.4.4
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/yaml.v2 v2.2.4
+	gopkg.in/yaml.v2 v2.2.8
 	rsc.io/pdf v0.1.1
 )
 

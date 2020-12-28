@@ -2,6 +2,7 @@ package smart
 
 import (
 	// "bytes"
+	"context"
 	"encoding/base64"
 	// "encoding/binary"
 	"encoding/json"
@@ -11,7 +12,10 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
 	// "unsafe"
+
+	"go-test/initial"
 )
 
 // var (
@@ -40,22 +44,22 @@ type smartAttr struct {
 }
 
 type finalSmartAttr struct {
-	Id       uint8  `json: "id"`
-	Name     string `json: "name"`
-	Flags    uint16 `json: "flag"`
-	Value    uint8  `json: "value"` // normalised value
-	Worst    uint8  `json: "worst"` // worst value
-	Reserved uint8  `json: "reserved"`
-	RawValue string `json: "rawValue"` // raw data
-	Type     string `json: "type"`
-	Updated  string `json: "updated"`
+	Id       uint8  `json: "id" bson:"id"`
+	Name     string `json: "name" bson:"name"`
+	Flags    uint16 `json: "flag" bson:"flag"`
+	Value    uint8  `json: "value" bson:"value"` // normalised value
+	Worst    uint8  `json: "worst" bson:"worst"` // worst value
+	Reserved uint8  `json: "reserved" bson:"reserved"`
+	RawValue string `json: "rawValue" bson:"rawValue"` // raw data
+	Type     string `json: "type" bson:"type"`
+	Updated  string `json: "updated" bson:"updated"`
 }
 
 type FinalSmartInfo struct {
-	DiskMD  string			 `json: "disk_md"`
-	DiskSN  string           `json: "disk_sn"`
-	Version uint16           `json: "version"`
-	Attrs   []finalSmartAttr `json: "attrs"`
+	DiskMD  string           `json: "disk_md" bson:"disk_md"`
+	DiskSN  string           `json: "disk_sn" bson:"disk_sn"`
+	Version uint16           `json: "version" bson:"version"`
+	Attrs   []finalSmartAttr `json: "attrs" bson:"attrs"`
 }
 
 // Page of 30 SMART attributes as per ATA spec
@@ -115,7 +119,7 @@ func (s *SmartPage) GetSmartPage(msmart map[byte][]byte) {
 		sa.Flags = uint16(v[1])
 		sa.Value = v[3]
 		sa.Worst = v[4]
-		sa.VendorBytes = [6]byte{v[5],v[6],v[7],v[8],v[9],v[10]} 
+		sa.VendorBytes = [6]byte{v[5], v[6], v[7], v[8], v[9], v[10]}
 		sa.Reserved = v[11]
 		s.Attrs = append(s.Attrs, sa)
 	}
@@ -328,9 +332,9 @@ func getAttrBytes() []byte {
 }
 
 //GetSmartFromJSON receive a json byte,parse to smart struct
-func GetSmartFromJSON(byteJson []byte) error{
+func GetSmartFromJSON(byteJson []byte) error {
 	jsonMap := make(map[string]string)
-	if err := json.Unmarshal(byteJson, &jsonMap); err != nil{
+	if err := json.Unmarshal(byteJson, &jsonMap); err != nil {
 		fmt.Println(err)
 		return err
 	}
@@ -352,7 +356,21 @@ func GetSmartFromJSON(byteJson []byte) error{
 	jsonResult, err := json.Marshal(finalSmartInfo)
 	fmt.Println(string(jsonResult))
 
+	err = insertSmart2Mongo(finalSmartInfo)
+
 	return err
+}
+
+func insertSmart2Mongo(finalSmartInfo FinalSmartInfo) error {
+	collection := initial.IsddcMongoDb.Collection("smart")
+	_, err := collection.InsertOne(context.Background(), finalSmartInfo)
+	if err != nil {
+		fmt.Printf("%s:%s insert failed", finalSmartInfo.DiskMD, finalSmartInfo.DiskSN)
+		return err
+	}
+	fmt.Printf("%s:%s insert successful", finalSmartInfo.DiskMD, finalSmartInfo.DiskSN)
+
+	return nil
 }
 
 func parseSmartAttr(attrBytes []byte) FinalSmartInfo {
