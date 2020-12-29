@@ -79,11 +79,34 @@ func strStr(s1, s2 string) int {
 	}
 }
 
+func strStr1(s1, s2 string) int {
+	len1 := len(s1)
+	len2 := len(s2)
+
+	if len2 == 0 {
+		return 0
+	}
+	if len1 < len2 {
+		return -1
+	}
+	if s1 == s2 {
+		return 0
+	}
+
+	for i := 0; i < len1-len2+1; i++{
+		if s1[i:i+len2] == s2{
+			return i
+		}
+	}
+	return -1
+}
+
 func TestStrStr(t *testing.T) {
 	s1 := "GodBlessYou"
-	s2 := "less"
+	s2 := "You"
 	fmt.Println(strings.Index(s1, s2))
 	fmt.Println(strStr(s1, s2))
+	fmt.Println(strStr1(s1, s2))
 }
 
 func TestCompare(t *testing.T) {
