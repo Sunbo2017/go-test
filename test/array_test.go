@@ -55,31 +55,101 @@ func maxArrayChild(arr []int) []int {
 	return result
 }
 
-func TestConcurrenceSlice(t *testing.T) {
-	// 长度和子协程数量一致
-	sliceList := make([][]int, 5)
-	result := []int{}
-
+func TestConcurrenceSlice1(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(5)
 
+	var mu sync.Mutex
+	result := []int{}
+
 	for i := 0; i < 5; i++ {
 		go func(i int) {
-			slice := sliceList[i]
-			slice = append(slice, i)
+			mu.Lock()
+			defer mu.Unlock()
+			result = append(result, i)
 			wg.Done()
 		}(i)
 	}
 
 	wg.Wait()
 
-	for i := 0; i < 5; i++ {
-		for _, v := range sliceList[i]{
-			result = append(result, v)
+	for _, v := range result {
+		fmt.Println(v)
+	}
+}
+
+func TestConcurrenceSlice2(t *testing.T) {
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+	defer close(ch1)
+	defer close(ch2)
+
+	result := []int{}
+
+	go func(chan int) {
+		ch1 <- 1
+	}(ch1)
+
+	go func(chan int) {
+		ch2 <- 2
+	}(ch2)
+
+	result = append(result, <-ch1)
+	result = append(result, <-ch2)
+
+	for _, v := range result {
+		fmt.Println(v)
+	}
+}
+
+func TestConcurrenceSlice3(t *testing.T) {
+	ch1 := make(chan int, 5)
+	ch2 := make(chan int, 5)
+	done := make(chan int,5)
+	defer close(ch1)
+	defer close(ch2)
+	defer close(done)
+
+	result := []int{}
+
+	go func(chan int) {
+		ch1 <- 1
+	}(ch1)
+
+	go func(chan int) {
+		ch2 <- 2
+	}(ch2)
+
+	count := 0
+
+	for {
+		select {
+		case a := <-ch1:
+			count++
+			result = append(result, a)
+			fmt.Printf("ch1 count==%d\n", count)
+			fmt.Println(result)
+			if count == 2 {
+				done <- 1
+			}
+		case b := <-ch2:
+			count++
+			result = append(result, b)
+			fmt.Printf("ch2 count==%d\n", count)
+			fmt.Println(result)
+			if count == 2 {
+				done <- 1
+			}
+		case c := <-done:
+			if c == 1 {
+				fmt.Printf("done==%d\n", count)
+				goto out
+			}
 		}
 	}
 
-	for _, v := range result{
+	out:
+	for _, v := range result {
 		fmt.Println(v)
 	}
 }
