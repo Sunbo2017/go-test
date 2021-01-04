@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 )
 
@@ -52,4 +53,33 @@ func maxArrayChild(arr []int) []int {
 	// }
 	// fmt.Println(result)
 	return result
+}
+
+func TestConcurrenceSlice(t *testing.T) {
+	// 长度和子协程数量一致
+	sliceList := make([][]int, 5)
+	result := []int{}
+
+	var wg sync.WaitGroup
+	wg.Add(5)
+
+	for i := 0; i < 5; i++ {
+		go func(i int) {
+			slice := sliceList[i]
+			slice = append(slice, i)
+			wg.Done()
+		}(i)
+	}
+
+	wg.Wait()
+
+	for i := 0; i < 5; i++ {
+		for _, v := range sliceList[i]{
+			result = append(result, v)
+		}
+	}
+
+	for _, v := range result{
+		fmt.Println(v)
+	}
 }
