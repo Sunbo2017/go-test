@@ -105,7 +105,7 @@ func TestConcurrenceSlice2(t *testing.T) {
 func TestConcurrenceSlice3(t *testing.T) {
 	ch1 := make(chan int, 5)
 	ch2 := make(chan int, 5)
-	done := make(chan int,5)
+	done := make(chan int, 5)
 	defer close(ch1)
 	defer close(ch2)
 	defer close(done)
@@ -148,7 +148,64 @@ func TestConcurrenceSlice3(t *testing.T) {
 		}
 	}
 
-	out:
+out:
+	for _, v := range result {
+		fmt.Println(v)
+	}
+}
+
+func TestConcurrenceSlice4(t *testing.T) {
+	ch := make(chan []int, 5)
+	defer close(ch)
+
+	result := []int{}
+
+	go func() {
+		array := []int{1, 2, 3, 4, 5}
+		ch <- array
+	}()
+
+	v := <-ch
+	for _, va := range v {
+		result = append(result, va)
+	}
+
+	for _, v := range result {
+		fmt.Println(v)
+	}
+}
+
+func TestConcurrenceSlice5(t *testing.T) {
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	ch := make(chan []int, 5)
+	result := []int{}
+
+	go func() {
+		arr := []int{1,2,3,4,5}
+		ch <- arr
+		wg.Done()
+	}()
+
+	go func() {
+		arr := []int{6,7,8,9,10}
+		ch <- arr
+		wg.Done()
+	}()
+
+	wg.Wait()
+
+	// Go提供了range关键字，将其使用在channel上时，会自动等待channel的动作一直到channel被关闭
+	// 所以使用range遍历channel之前，必须确保channel已关闭，否则会死锁 
+	close(ch)
+
+	for va := range ch {
+		for _, v := range va{
+			result = append(result, v)
+		}
+	}
+
 	for _, v := range result {
 		fmt.Println(v)
 	}
