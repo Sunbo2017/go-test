@@ -153,6 +153,39 @@ func dfsWithStack(root *treeNode) {
 	}
 }
 
+// 翻转二叉树 递归
+func mirrorBTree1(root *treeNode){
+
+	if root.left == nil && root.right == nil{
+		return
+	}
+
+	root.left, root.right = root.right, root.left
+
+	mirrorBTree1(root.left)
+	mirrorBTree1(root.right)
+}
+
+// 翻转二叉树 遍历
+func mirrorBTree2(root *treeNode){
+	stack := NewStack()
+	stack.Push(root)
+
+	for stack.Len() > 0{
+		node := stack.Pop().(*treeNode)
+		node.left, node.right = node.right, node.left
+
+		if node.left != nil {
+			stack.Push(node.left)
+		}
+		if node.right != nil {
+			stack.Push(node.right)
+		}
+	}
+
+}
+
+
 func bfsWithQueue(root *treeNode){
 	if root == nil{
 		return
@@ -185,5 +218,11 @@ func TestDfsWithStack(t *testing.T){
 func TestBfsWithQueue(t *testing.T){
 	node := createTree()
 	// root 1 2 3 4 5 6 7 8 9 10 11 12 13 14
+	bfsWithQueue(node)
+
+	// mirrorBTree1(node)
+	mirrorBTree2(node)
+
+	// root 2 1 6 5 4 3 14 13 12 11 10 9 8 7
 	bfsWithQueue(node)
 }
