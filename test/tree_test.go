@@ -226,3 +226,5 @@ func TestBfsWithQueue(t *testing.T){
 	// root 2 1 6 5 4 3 14 13 12 11 10 9 8 7
 	bfsWithQueue(node)
 }
+
+//判断二叉树是不是二叉搜索树
