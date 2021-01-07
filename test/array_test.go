@@ -183,13 +183,13 @@ func TestConcurrenceSlice5(t *testing.T) {
 	result := []int{}
 
 	go func() {
-		arr := []int{1,2,3,4,5}
+		arr := []int{1, 2, 3, 4, 5}
 		ch <- arr
 		wg.Done()
 	}()
 
 	go func() {
-		arr := []int{6,7,8,9,10}
+		arr := []int{6, 7, 8, 9, 10}
 		ch <- arr
 		wg.Done()
 	}()
@@ -197,11 +197,11 @@ func TestConcurrenceSlice5(t *testing.T) {
 	wg.Wait()
 
 	// Go提供了range关键字，将其使用在channel上时，会自动等待channel的动作一直到channel被关闭
-	// 所以使用range遍历channel之前，必须确保channel已关闭，否则会死锁 
+	// 所以使用range遍历channel之前，必须确保channel已关闭，否则会死锁
 	close(ch)
 
 	for va := range ch {
-		for _, v := range va{
+		for _, v := range va {
 			result = append(result, v)
 		}
 	}
@@ -211,5 +211,32 @@ func TestConcurrenceSlice5(t *testing.T) {
 	}
 }
 
+// 查找数组中最大的前k个数
+func searchTopK(array []int, result []int, k int) {
+	newArray := []int{}
+	max := 0
+	for _, v := range array {
+		if v > max {
+			max = v
+		}
+	}
+	for _, v := range array {
+		if v == max {
+			result = append(result, v)
+		} else {
+			newArray = append(newArray, v)
+		}
+	}
 
-// 查找数组中最大的前n个数
+	if len(result) >= k {
+		return
+	}
+	searchTopK(newArray, result, k)
+}
+
+func TestTopK(t *testing.T) {
+	arr := []int{7, 4, 5, 3, 1, 8, 6, 6, 9}
+	result := []int{}
+	searchTopK(arr, result, 5)
+	fmt.Println(result)
+}
