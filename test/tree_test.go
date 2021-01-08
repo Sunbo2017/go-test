@@ -76,28 +76,29 @@ func (node *treeNode) lastTraverse() {
 }
 
 var result [][]string
+
 // 层序遍历
 func (node *treeNode) levelTraverse() [][]string {
-    if node == nil {
-        return result
-    }
-    dfsHelper(node, 0)
-    return result
+	if node == nil {
+		return result
+	}
+	dfsHelper(node, 0)
+	return result
 }
 
 func dfsHelper(node *treeNode, level int) {
-    if node == nil {
-        return
-    }
-    if len(result) < level + 1 {
-        result = append(result, make([]string, 0))
-    }
-    result[level] = append(result[level], node.value)
-    dfsHelper(node.left, level + 1)
-    dfsHelper(node.right, level + 1)
+	if node == nil {
+		return
+	}
+	if len(result) < level+1 {
+		result = append(result, make([]string, 0))
+	}
+	result[level] = append(result[level], node.value)
+	dfsHelper(node.left, level+1)
+	dfsHelper(node.right, level+1)
 }
 
-func TestTreeNode(t *testing.T){
+func TestTreeNode(t *testing.T) {
 	node := createTree()
 	// root 1 3 7 8 4 9 10 2 5 11 12 6 13 14
 	node.firstTraverse()
@@ -113,8 +114,8 @@ func TestTreeNode(t *testing.T){
 // max: max depth
 func dfsCreate(p *treeNode, depth, max int) {
 	if depth < max {
-		left := &treeNode{value: fmt.Sprintf("%d", 2 * depth)}
-		right := &treeNode{value: fmt.Sprintf("%d", 4 * depth)}
+		left := &treeNode{value: fmt.Sprintf("%d", 2*depth)}
+		right := &treeNode{value: fmt.Sprintf("%d", 4*depth)}
 		p.left = left
 		p.right = right
 		dfsCreate(p.left, depth+1, max)
@@ -122,7 +123,7 @@ func dfsCreate(p *treeNode, depth, max int) {
 	}
 }
 
-func TestDfsCreate(t *testing.T){
+func TestDfsCreate(t *testing.T) {
 	root := &treeNode{"root", nil, nil}
 	dfsCreate(root, 1, 3)
 	fmt.Println(root.levelTraverse())
@@ -142,21 +143,21 @@ func dfsWithStack(root *treeNode) {
 		fmt.Println(node.value)
 
 		// 先压入右节点
-		if node.right != nil{
+		if node.right != nil {
 			stack.Push(node.right)
 		}
-		
+
 		// 再压入左节点
-		if node.left != nil{
+		if node.left != nil {
 			stack.Push(node.left)
 		}
 	}
 }
 
 // 翻转二叉树 递归
-func mirrorBTree1(root *treeNode){
+func mirrorBTree1(root *treeNode) {
 
-	if root.left == nil && root.right == nil{
+	if root.left == nil && root.right == nil {
 		return
 	}
 
@@ -167,11 +168,11 @@ func mirrorBTree1(root *treeNode){
 }
 
 // 翻转二叉树 遍历
-func mirrorBTree2(root *treeNode){
+func mirrorBTree2(root *treeNode) {
 	stack := NewStack()
 	stack.Push(root)
 
-	for stack.Len() > 0{
+	for stack.Len() > 0 {
 		node := stack.Pop().(*treeNode)
 		node.left, node.right = node.right, node.left
 
@@ -185,37 +186,36 @@ func mirrorBTree2(root *treeNode){
 
 }
 
-
-func bfsWithQueue(root *treeNode){
-	if root == nil{
+func bfsWithQueue(root *treeNode) {
+	if root == nil {
 		return
 	}
 
 	queue := []*treeNode{root}
 
-	for len(queue) > 0{
+	for len(queue) > 0 {
 		node := queue[0]
 
 		fmt.Println(node.value)
 
-		if node.left != nil{
+		if node.left != nil {
 			queue = append(queue, node.left)
 		}
 
-		if node.right != nil{
+		if node.right != nil {
 			queue = append(queue, node.right)
 		}
 		queue = queue[1:]
 	}
 }
 
-func TestDfsWithStack(t *testing.T){
+func TestDfsWithStack(t *testing.T) {
 	node := createTree()
 	// root 1 3 7 8 4 9 10 2 5 11 12 6 13 14
 	dfsWithStack(node)
 }
 
-func TestBfsWithQueue(t *testing.T){
+func TestBfsWithQueue(t *testing.T) {
 	node := createTree()
 	// root 1 2 3 4 5 6 7 8 9 10 11 12 13 14
 	bfsWithQueue(node)
@@ -227,4 +227,50 @@ func TestBfsWithQueue(t *testing.T){
 	bfsWithQueue(node)
 }
 
-//判断二叉树是不是二叉搜索树
+// 判断二叉树是不是二叉查找树
+// 中序遍历思想：如果是二叉查找树，中序遍历结果是有序的
+var array = []string{}
+
+func judgeSearchTree(root *treeNode) {
+	if root == nil {
+		return
+	}
+	if root.left == nil && root.right == nil {
+		return
+	}
+	judgeSearchTree(root.left)
+	array = append(array, root.value)
+	judgeSearchTree(root.right)
+}
+
+// 直接递归判断,当前节点的值是左子树的最大值，同时是右子树的最小值
+func judgeSearchTree1(root *treeNode, maxVal, minVal string) bool{
+	if root == nil {
+		return true
+	}
+	if root.left == nil && root.right == nil {
+		return true
+	}
+	if root.value < minVal || root.value > maxVal {
+		return false
+	}
+	if !judgeSearchTree1(root.left, root.value, minVal) || !judgeSearchTree1(root.right, maxVal, root.value) {
+		return false
+	}
+	return true
+}
+
+func TestJudgeSerchTree(t *testing.T) {
+	node := createTree()
+	judgeSearchTree(node)
+	//判断array是否是正序即可，
+	//因为我的treeNode结构value为string，省略判断步骤
+	fmt.Println(array)
+}
+
+func TestJudgeSerchTree1(t *testing.T) {
+	node := createTree()
+	//因为我的treeNode结构value为string，暂写为如下形式
+	result := judgeSearchTree1(node, "100", "0")
+	fmt.Println(result)
+}

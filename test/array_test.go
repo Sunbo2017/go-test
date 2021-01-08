@@ -212,31 +212,22 @@ func TestConcurrenceSlice5(t *testing.T) {
 }
 
 // 查找数组中最大的前k个数
-func searchTopK(array []int, result []int, k int) {
-	newArray := []int{}
-	max := 0
-	for _, v := range array {
-		if v > max {
-			max = v
+// 最简单的方案是排序后取出前k个数
+// 因为选择排序每次都能挑出最大值
+// 所以可以改造选择排序算法实现，外层循环只需循环k次，时间复杂度为O(k*n)
+func searchTopK(array []int, k int) []int {
+	for i := 0; i < k; i++ {
+		for j := i + 1; j < len(array); j++ {
+			if array[j] > array[i] {
+				array[i], array[j] = array[j], array[i]
+			}
 		}
 	}
-	for _, v := range array {
-		if v == max {
-			result = append(result, v)
-		} else {
-			newArray = append(newArray, v)
-		}
-	}
-
-	if len(result) >= k {
-		return
-	}
-	searchTopK(newArray, result, k)
+	return array[:k]
 }
 
 func TestTopK(t *testing.T) {
 	arr := []int{7, 4, 5, 3, 1, 8, 6, 6, 9}
-	result := []int{}
-	searchTopK(arr, result, 5)
+	result := searchTopK(arr, 5)
 	fmt.Println(result)
 }

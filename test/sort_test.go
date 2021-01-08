@@ -48,6 +48,7 @@ func InsertSort(arr []int) {
 			if arr[j] < arr[j-1] {
 				arr[j-1], arr[j] = arr[j], arr[j-1]
 			} else{
+				// 前边元素一直有序，所以当出现不满足的元素时可以直接跳出内层循环
 				break
 			}
 		}
