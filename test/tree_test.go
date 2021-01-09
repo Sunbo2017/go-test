@@ -2,12 +2,19 @@ package test
 
 import (
 	"fmt"
+	"math"
 	"testing"
 )
 
 type treeNode struct {
 	value       string
 	left, right *treeNode
+}
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
 }
 
 //                                              root
@@ -244,7 +251,7 @@ func judgeSearchTree(root *treeNode) {
 }
 
 // 直接递归判断,当前节点的值是左子树的最大值，同时是右子树的最小值
-func judgeSearchTree1(root *treeNode, maxVal, minVal string) bool{
+func judgeSearchTree1(root *treeNode, maxVal, minVal string) bool {
 	if root == nil {
 		return true
 	}
@@ -254,7 +261,10 @@ func judgeSearchTree1(root *treeNode, maxVal, minVal string) bool{
 	if root.value < minVal || root.value > maxVal {
 		return false
 	}
-	if !judgeSearchTree1(root.left, root.value, minVal) || !judgeSearchTree1(root.right, maxVal, root.value) {
+	if !judgeSearchTree1(root.left, root.value, minVal) {
+		return false
+	}
+	if !judgeSearchTree1(root.right, maxVal, root.value) {
 		return false
 	}
 	return true
@@ -273,4 +283,49 @@ func TestJudgeSerchTree1(t *testing.T) {
 	//因为我的treeNode结构value为string，暂写为如下形式
 	result := judgeSearchTree1(node, "100", "0")
 	fmt.Println(result)
+}
+
+// LeetCode 99: ⼆叉搜索树中的两个节点被错误地交换。请在不改变其结构的情况下，恢复这棵树
+func recoverTree(root *TreeNode) {
+	var prev, target1, target2 *TreeNode
+	_, target1, target2 = inOrderTraverse(root, prev, target1, target2)
+	if target1 != nil && target2 != nil {
+		target1.Val, target2.Val = target2.Val, target1.Val
+	}
+}
+func inOrderTraverse(root, prev, target1, target2 *TreeNode) (*TreeNode,
+	*TreeNode, *TreeNode) {
+	if root == nil {
+		return prev, target1, target2
+	}
+	prev, target1, target2 = inOrderTraverse(root.Left, prev, target1, target2)
+	if prev != nil && prev.Val > root.Val {
+		if target1 == nil {
+			target1 = prev
+		}
+		target2 = root
+	}
+	prev = root
+	prev, target1, target2 = inOrderTraverse(root.Right, prev, target1, target2)
+	return prev, target1, target2
+}
+
+// LeetCode 124：给出⼀个⼆叉树，要求找⼀条路径使得路径的和是最⼤的
+func maxPathSum(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	max := math.MinInt32
+	getPathSum(root, &max)
+	return max
+}
+func getPathSum(root *TreeNode, maxSum *int) int {
+	if root == nil {
+		return math.MinInt32
+	}
+	left := getPathSum(root.Left, maxSum)
+	right := getPathSum(root.Right, maxSum)
+	currMax := max(max(left+root.Val, right+root.Val), root.Val)
+	*maxSum = max(*maxSum, max(currMax, left+right+root.Val))
+	return currMax
 }

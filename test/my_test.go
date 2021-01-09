@@ -111,3 +111,36 @@ func TestCombinations(t *testing.T) {
 	r := byten - '1'
 	fmt.Println(r)
 }
+
+// 已知每一个字母可以用 1~26 表示，给定一个数字组成的字符串，问它可以表示多少种字母组合。
+// 123456215
+func numString(str string) int {
+	return 0
+}
+
+// 输入一个数组和一个目标值 T，判断数组中是否存在两个数的和为 T
+// 最简单方法可以直接双层循环判断和，O(n^2)
+// 可以使用map的k，v分别记录元素值和差值，O（n）
+func judege2Sum(arr []int, t int) (v1,v2 int){
+	resMap := map[int]int{}
+	for _, v := range arr{
+		if _, ok := resMap[v]; !ok{
+			resMap[t - v] = v
+		} else{
+			return v, resMap[v]
+		}
+	}
+	return 0, 0
+}
+
+// 升级：输入一个数组和一个目标值 T，判断数组中是否存在某些数的和为 T。
+
+
+
+func Test2Sum(t *testing.T){
+	array := []int{1,2,3,4,6,5,8,9}
+	// 6, 4
+	v1, v2 := judege2Sum(array, 10)
+	fmt.Println(v1)
+	fmt.Println(v2)
+}
