@@ -144,3 +144,22 @@ func Test2Sum(t *testing.T){
 	fmt.Println(v1)
 	fmt.Println(v2)
 }
+
+// 一个细胞的寿命是5min 他会在2min和4min 分别分裂出一个新细胞，请问n min后 ，有多少细胞 
+var sumn = 1
+func sum(n int) int{
+    for i:=1;i<=n;i++{
+        if i%2 == 0 || i%4==0{
+            sumn += sum(n-i)
+        }
+        if i%5 ==0 {
+            sumn--
+        }
+    }
+    return sumn
+}
+
+func TestSum(t *testing.T){
+	n := 10
+	fmt.Println(sum(n))
+}
