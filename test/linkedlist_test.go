@@ -111,3 +111,33 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	}
 	return head.Next
 }
+
+// 单链表快排
+func quickSortList(start, end *ListNode) {
+	if start == end || start.Next == end {
+		return
+	}
+	mid := partion(start, end)
+	quickSortList(start, mid)
+	quickSortList(mid.Next, end)
+}
+
+func partion(start, end *ListNode) *ListNode {
+	if start == end || start.Next == end {
+		return start
+	}
+
+	pivot := start.Val //选择基准
+	p := start
+	q := start
+	for q != end {
+		if q.Val < pivot {
+			p = p.Next
+			p.Val, q.Val = q.Val, p.Val
+		}
+		q = q.Next //否则一直往下走
+	}
+	
+	p.Val, start.Val = start.Val, p.Val //定位
+	return p
+}
