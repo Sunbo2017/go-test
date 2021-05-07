@@ -3,18 +3,17 @@ module go-test
 go 1.12
 
 require (
-	github.com/dswarbrick/smart v0.0.0-20190505152634-909a45200d6d
-	github.com/gorilla/mux v1.8.0
+	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/schema v1.1.0
-	github.com/kr/pretty v0.1.0 // indirect
 	github.com/sirupsen/logrus v1.5.0
 	github.com/streadway/amqp v1.0.0
-	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/unidoc/unipdf/v3 v3.13.0
 	go.mongodb.org/mongo-driver v1.4.4
+	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
+	google.golang.org/grpc v1.36.0
+	google.golang.org/protobuf v1.25.0
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.2.8
-	rsc.io/pdf v0.1.1
 )
 
 replace (
