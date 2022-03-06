@@ -9,6 +9,7 @@ import (
 )
 
 var wg sync.WaitGroup
+// var lock sync.Mutex
 
 type worker struct {
 	name string
@@ -57,4 +58,36 @@ func TestNoGoroutine(t *testing.T) {
 	t2 := time.Now().UnixNano()
 	// 1000000
 	fmt.Println(t2 - t1)
+}
+
+func TestGoroutineUseOneChan(t *testing.T){
+	intChan := make(chan int, 12)
+	// fatal error: all goroutines are asleep - deadlock!
+	go goroutine1(intChan)
+	go goroutine2(intChan)
+	// for {
+	// 	i := <- intChan
+	// 	fmt.Println(i)
+	// 	// if !ok {
+	// 	// 	break
+	// 	// }
+	// }
+
+	for i := range intChan {
+		fmt.Println(i)
+	}
+	
+	// close(intChan)
+}
+
+func goroutine1(ch chan int){
+	for i:=0;i<5;i++ {
+		ch <- i
+	}
+}
+
+func goroutine2(ch chan int){
+	for i:=0;i<5;i++ {
+		ch <- i
+	}
 }
