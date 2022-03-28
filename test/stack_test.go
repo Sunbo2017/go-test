@@ -73,6 +73,9 @@ func Benchmark_Pop(b *testing.B) {
 }
 
 // LeetCode-cookbook-20：校验字符串是否是合规括号对
+//Input: "{[]}" Output: true
+//Input: "()[]{}" Output: true
+//Input: "([)]" Output: false
 // 使用结构体实现栈结构
 func isValid(s string) bool {
 	// 括号对字典

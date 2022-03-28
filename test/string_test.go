@@ -6,11 +6,18 @@ import (
 	"testing"
 )
 
-func max(a, b int) int {
+func Max(a, b int) int {
 	if a >= b {
 		return a
 	}
 	return b
+}
+
+func Min(a, b int) int {
+	if a >= b {
+		return b
+	}
+	return a
 }
 
 // LeetCode-cookbook-3： 查找最大不重复子串，返回其长度
@@ -36,7 +43,33 @@ func longestSubstring(s string) int {
 			fmt.Println(s[left:right])
 			left++
 		}
-		result = max(result, right-left)
+		result = Max(result, right-left)
+		// fmt.Println(s[left:right])
+	}
+	return result
+}
+
+//使用map替换bitmap
+func longestSubstring1(s string) int {
+	if len(s) == 0 {
+		return 0
+	}
+	// 
+	bitSet := make(map[byte]int, 256)
+	// 结果，窗口起点和终点
+	result, left, right := 0, 0, 0
+	for left < len(s) {
+		if right < len(s) && bitSet[s[right]] == 0 {
+			// 右侧已经检查过的字符置为1
+			bitSet[s[right]] = 1
+			right++
+		} else {
+			//将已比较过的left位值归0，开始下一轮查找
+			bitSet[s[left]] = 0
+			fmt.Println(s[left:right])
+			left++
+		}
+		result = Max(result, right-left)
 		// fmt.Println(s[left:right])
 	}
 	return result

@@ -193,6 +193,7 @@ func mirrorBTree2(root *treeNode) {
 
 }
 
+//队列实现广度优先
 func bfsWithQueue(root *treeNode) {
 	if root == nil {
 		return
@@ -325,7 +326,7 @@ func getPathSum(root *TreeNode, maxSum *int) int {
 	}
 	left := getPathSum(root.Left, maxSum)
 	right := getPathSum(root.Right, maxSum)
-	currMax := max(max(left+root.Val, right+root.Val), root.Val)
-	*maxSum = max(*maxSum, max(currMax, left+right+root.Val))
+	currMax := Max(Max(left+root.Val, right+root.Val), root.Val)
+	*maxSum = Max(*maxSum, Max(currMax, left+right+root.Val))
 	return currMax
 }

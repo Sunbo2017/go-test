@@ -38,9 +38,10 @@ func TestMapTransfor(t *testing.T) {
 // 忽略第0个台阶，从第1个台阶开始算，后边台阶如果矮于第一个台阶，差值即为积水量，
 // 直到高于第一个台阶的新台阶出现，第一次循环结束，
 // 然后从这个新台阶开始第二次循环
+// 该思想存在局限性，不能当作正确答案
 func TestStepsWater(t *testing.T) {
 	// steps := []int{1, 0, 2, 1, 2, 3, 0, 1, 2, 4}
-	steps := []int{0, 0, 2, 1, 2, 3, 0, 1, 2, 4}
+	steps := []int{0, 0, 2, 1, 2, 3, 0, 1, 3, 2}
 	water := 0
 	i, j := 0, 1
 	for i < len(steps) {
@@ -59,6 +60,41 @@ func TestStepsWater(t *testing.T) {
 	}
 	fmt.Println(water)
 }
+
+type step struct {
+	val int  //当前台阶高度
+	leftMax int  //左侧最高台阶高度
+	rightMax int  //右侧最高台阶高度
+}
+
+func makeSteps(steps []int) []step {
+	list := make([]step, len(steps))
+	for i, v := range steps {
+		s := step{val: v}
+		list[i] = s
+	}
+	for i:=1; i<len(steps)-1; i++ {
+		list[i].leftMax = Max(list[i-1].leftMax, list[i-1].val)
+	}
+	for i:=len(steps)-2; i>0; i-- {
+		list[i].rightMax = Max(list[i+1].rightMax, list[i+1].val)
+	}
+	return list
+}
+
+func TestStepWater1(t *testing.T) {
+	steps := []int{0, 0, 2, 1, 2, 3, 0, 1, 3, 2}
+	water := 0	
+	stepList := makeSteps(steps)
+	for i:=1; i<len(steps)-1; i++ {
+		increment := Min(stepList[i].leftMax - stepList[i].val, stepList[i].rightMax - stepList[i].val)
+		if increment > 0 {
+			water += increment
+		}
+	}
+	t.Logf("water:%v", water)
+}
+
 
 func TestSort(t *testing.T) {
 	ints := []int{0, 5, 2, 1, 3, 4, 6, 9, 8, 7}
