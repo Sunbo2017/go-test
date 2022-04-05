@@ -312,6 +312,7 @@ func inOrderTraverse(root, prev, target1, target2 *TreeNode) (*TreeNode,
 }
 
 // LeetCode 124：给出⼀个⼆叉树，要求找⼀条路径使得路径的和是最⼤的
+//本题中，路径被定义为⼀条从树中任意节点出发，达到任意节点的序列。该路径⾄少包含⼀个节点，且不⼀定经过根节点
 func maxPathSum(root *TreeNode) int {
 	if root == nil {
 		return 0

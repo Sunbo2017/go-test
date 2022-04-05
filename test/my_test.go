@@ -148,9 +148,15 @@ func TestCombinations(t *testing.T) {
 	fmt.Println(r)
 }
 
+// var res [][]string
+
 // 已知每一个字母可以用 1~26 表示，给定一个数字组成的字符串，问它可以表示多少种字母组合。
 // 123456215
-func numString(str string) int {
+func numString(str string, lStr []string) int {
+	for i:=0; i<len(str); {
+
+	}
+	
 	return 0
 }
 
@@ -185,17 +191,19 @@ func Test2Sum(t *testing.T){
 var sumn = 1
 func sum(n int) int{
     for i:=1;i<=n;i++{
-        if i%2 == 0 || i%4==0{
-            sumn += sum(n-i)
+        if i%2 == 0 || i%4==0 {
+            // sumn += sum(n-i)
+			sumn *= 2
         }
-        if i%5 ==0 {
-            sumn--
+        if i%5==0 {
+			div := i/5
+            sumn = sumn - 2*div
         }
     }
     return sumn
 }
 
 func TestSum(t *testing.T){
-	n := 10
+	n := 15
 	fmt.Println(sum(n))
 }
