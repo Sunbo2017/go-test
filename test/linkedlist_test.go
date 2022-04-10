@@ -141,3 +141,40 @@ func partion(start, end *ListNode) *ListNode {
 	p.Val, start.Val = start.Val, p.Val //定位
 	return p
 }
+
+
+// 取出单链表倒数第k个元素
+// 最简单粗暴方法遍历一遍链表，数据存到数组中，遍历结束后直接取数组倒数第k个值
+// 使用两个距离相差k的指针，第一个node开始走时，k--，k=0时，第二个node开始走；
+// 当第一个node走到结尾时，第二个node刚好位于倒数第k的位置
+func findBackwardsK(node *ListNode, k int) *ListNode {
+	target := node
+	current := node
+	for current != nil {
+		current = current.Next
+		if k > 0 {
+			k--
+		} else {
+			target = target.Next
+		}
+	}
+	return target
+}
+
+
+// 从链表的第二个结点开始，把遍历到的结点插入到头结点的后面，直到遍历结束。
+// 假如原链表为head->1->2->3->4->5->6->7，在遍历到2的时候，将2插入到头结点的后面，链表变为head->2->1->3->4->5->6->7，
+// 同理head->3->2->1->4->5->6->7等等。
+func reverseLinkedlist(node *ListNode) {
+	if node == nil || node.Next == nil {
+		return
+	}
+	cur := node.Next.Next
+	node.Next.Next = nil
+	for cur != nil {
+		next := cur.Next //保存后续节点
+		cur.Next = node.Next 
+		node.Next = cur  //插入到头节点后边
+		cur = next
+	}
+}

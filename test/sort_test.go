@@ -83,7 +83,8 @@ func QuickSort(arr []int, begin, end int) {
 func quickSort(arr []int, start, end int) {
     if start < end {
         i, j := start, end
-        pivot := arr[(start+end)/2]
+        // pivot := arr[(start+end)/2]
+		pivot := arr[start]
         for i <= j {
             for arr[i] < pivot {
                 i++
@@ -107,6 +108,22 @@ func quickSort(arr []int, start, end int) {
             quickSort(arr, i, end)
         }
     }
+}
+
+// 归并排序，算法是采用分治法（Divide and Conquer）的一个非常典型的应用，且各层分治递归可以同时进行。
+// 当我们要排序这样一个数组的时候，归并排序法首先将这个数组分成一半。
+// 然后想办法把左边的数组给排序，右边的数组给排序，之后呢再将它们归并起来。
+// 对左边的数组和右边的数组进行排序的时候，再分别将左边的数组和右边的数组分成一半，然后对每一个部分先排序，再归并。
+// 分到一定细度的时候，每一个部分都只有一个元素，此时不用排序，对他们进行一次简单的归并就好了。
+// 归并到上一个层级之后继续归并，直到归并到最高的层级，排序结束。
+// 时间复杂度：O(N*logN)
+func MergeSort(arr []int, l, r int) {
+	if l < r {
+		mid := (l + r - 1) / 2
+		MergeSort(arr, l, mid)
+		MergeSort(arr, mid+1, r)
+		Merge(arr, l, mid, r)
+	}
 }
 
 // 合并
@@ -134,17 +151,6 @@ func Merge(arr []int, l, mid, r int) {
 	for ; j < n2; j++ {
 		arr[k] = right[j]
 		k++
-	}
-}
-
-//归并排序
-// 时间复杂度：O(N*logN)
-func MergeSort(arr []int, l, r int) {
-	if l < r {
-		mid := (l + r - 1) / 2
-		MergeSort(arr, l, mid)
-		MergeSort(arr, mid+1, r)
-		Merge(arr, l, mid, r)
 	}
 }
 
@@ -211,10 +217,11 @@ func TestMySort(t *testing.T) {
 
 	// SelectSort(array) //数量级1000：3000300 ns 2998000 3007200 数量级10000：236098400
 	// Bubble(array) //数量级1000：3000400 ns 3000500 3001600 3000700 2009100 1994100 数量级10000：234680800 231802700
-	InsertSort(array) //数量级1000：2000600 ns 1999600 2001000 2013600 数量级10000：148584200
+	// InsertSort(array) //数量级1000：2000600 ns 1999600 2001000 2013600 数量级10000：148584200
 	// MergeSort(array, 0, len(array)-1) //数量级10000：3008000
 	// HeapSort(array) //数量级10000：2000200
 	// QuickSort(array, 0, len(array)-1) //数量级10000：1000300
+	quickSort(array, 0, len(array)-1) //数量级10000：1000300
 
 	// fmt.Println(array)
 	end := time.Now().UnixNano()
