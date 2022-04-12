@@ -143,7 +143,7 @@ func partion(start, end *ListNode) *ListNode {
 }
 
 
-// 取出单链表倒数第k个元素
+// 取出单链表倒数第k个元素：使用快慢指针
 // 最简单粗暴方法遍历一遍链表，数据存到数组中，遍历结束后直接取数组倒数第k个值
 // 使用两个距离相差k的指针，第一个node开始走时，k--，k=0时，第二个node开始走；
 // 当第一个node走到结尾时，第二个node刚好位于倒数第k的位置
@@ -162,6 +162,44 @@ func findBackwardsK(node *ListNode, k int) *ListNode {
 }
 
 
+// 判断单链表是否有环：应用快慢指针
+func judgeListCycle(node *ListNode) bool {
+	fast, slow := node, node
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+		if fast == slow {
+			return true
+		}
+	}
+	return false
+}
+
+// 已知链表有环，找到环的起始位置
+// 相遇时慢指针走k步，快指针走2k步，快指针比慢指针多走了k步，也就是环的长度为k
+// 设相遇点距环的起点的距离为 m，那么环的起点距头结点 head 的距离为 k - m，
+// 也就是说如果从 head 前进 k - m 步就能到达环起点。
+// 巧的是，如果从相遇点继续前进 k - m 步，也恰好到达环起点。
+func getCycleStart(node *ListNode) *ListNode {
+	fast, slow := node, node
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+		if fast == slow {
+			break
+		}
+	}
+	slow = node
+	for slow != fast {
+		fast = fast.Next
+		slow = slow.Next
+	}
+	return slow
+}
+
+
+
+// 翻转链表
 // 从链表的第二个结点开始，把遍历到的结点插入到头结点的后面，直到遍历结束。
 // 假如原链表为head->1->2->3->4->5->6->7，在遍历到2的时候，将2插入到头结点的后面，链表变为head->2->1->3->4->5->6->7，
 // 同理head->3->2->1->4->5->6->7等等。
