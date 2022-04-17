@@ -122,6 +122,38 @@ func isValidSample(s string) bool {
 	return len(stack) == 0
 }
 
+// LeetCode 921：使括号有效的最少添加
+// 给你输⼊⼀个字符串 s，你可以在其中的任意位置插⼊左括号 ( 或者右括号 )，
+// 请问你最少需要⼏次插⼊才能使得 s 变成⼀个有效的括号串？
+// ⽐如说输⼊ s = "())("，算法应该返回 2，因为我们⾄少需要插⼊两次把 s 变成 "(())()"，这样每个左
+// 括号都有⼀个右括号匹配，s 是⼀个有效的括号串
+func minAdd2MakeValid(s string) int {
+	// 分别记录左括号和右括号的需求数
+	left, right := 0, 0
+	for _, v := range s {
+		if v == '(' {
+			// 对右括号的需求 + 1
+			right++
+		}
+		if v == ')' {
+			// 对右括号的需求 - 1
+			right--
+			if right == -1 {
+				right = 0
+				// 需插⼊⼀个左括号
+				left++
+			}
+		}
+	}
+	return left+right
+}
+
+func TestMinAdd(t *testing.T) {
+	s := "())("
+	count := minAdd2MakeValid(s)
+	t.Log(count)
+}
+
 func TestValid(t *testing.T) {
 	s1 := "()[]{}"
 	s2 := "([]){}"

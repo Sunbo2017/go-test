@@ -207,3 +207,129 @@ func TestSum(t *testing.T){
 	n := 15
 	fmt.Println(sum(n))
 }
+
+// 判断n是否是质数
+// 按素数的定义，也就是只有 1 与本身可以整除，所以可以用 2→ i-1 去除 i，如果都除不尽，i 就是素数。
+// 观点对，但却笨拙。当 i>2 时，有哪一个数可以被 i-1 除尽的？没有！
+// 为什么？如果 i 不是质数，那么 i=a×b，此地 a 与 b 既不是 i 又不是 1；
+// 正因为 a>1，a 至少为 2，因此 b 最多也是 i/2 而已，去除 i 的数用不着是 2→ i-1，而用 2→ i/2 就可以了。
+// 不但如此，因为 i=a×b，a 与 b 不能大于 sqrt(i)，为什么呢？
+// 如果 a>sqrt(i)，b>sqrt(i)，于是 a×b > sqrt(i)*sqrt(i) = i，因此就都不能整除i了。
+// 如果i不是质数，它的因子最大就是 sqrt(i)；换言之，用 2→ sqrt(i)去检验就行了
+func judgePrime(n int) bool {
+	if n==1 || n==0 {
+		return false
+	}
+	// for i:=2;i*i<n;i++ {
+	for i:=2;i<n;i++ {
+		if n%i == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+// 输出一亿内的所有素数
+func findPrimeAll(n int) {
+	total := 0
+	numChan := make(chan int, n)
+	resChan := make(chan string)
+	exitChan := make(chan int, 10)
+	for i:=2;i<=n;i++ {
+		numChan <- i
+	}
+	close(numChan)
+
+	for i:=0;i<10;i++ {
+		go findPrime(numChan, exitChan,resChan, i)
+	}
+
+	// 等待结束信号
+	go func () {
+		count := 0
+		for v:= range exitChan {
+			count++
+			fmt.Printf("channel:%v is finish,count=%v;", v, count)
+			if count == 10 {
+				fmt.Println("close resChan")
+				close(resChan)
+				close(exitChan)
+			}
+		}
+	}()
+
+	// for v := range resChan {
+	// 	fmt.Printf("%v,",v)
+	// 	total++
+	// }
+	for {
+		_, ok := <- resChan
+		total++
+		if !ok {
+			break
+		}
+	}
+	
+	fmt.Printf("total:%v \n", total)
+}
+
+func findPrime(in,exit chan int, out chan string, num int) {
+	// fmt.Printf("channel id:%v /n", num)
+	for v := range in {
+		if res := judgePrime(v); res {
+			// fmt.Println(v)
+			out <- fmt.Sprintf("%v:%v", num, v)
+		}
+	}
+	exit <- num
+}
+
+func TestFindPrime(t *testing.T) {
+	// findPrimeAll(100000000)
+	_CalcPrimes()
+    fmt.Println(_Primes)
+    fmt.Println(100000000, "以内的素数个数为", _N)
+	fmt.Println("finish...")
+}
+
+
+var _Primes []uint64 = []uint64{
+    2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+    31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
+    73, 79, 83, 89, 97,
+}
+
+var _N int
+
+// 设n>1为整数，m为整数，且n≤m<n^2，如果小于n的所有素数都不是m的因子，则m为素数。
+func _CalcPrimes() {
+    N := len(_Primes)
+    i := 0
+
+    for n := uint64(101); n < 10000; n += 2 {
+        for i = 1; i < N; i++ { // i从1开始，因为2必然不整除n
+            if n%_Primes[i] == 0 {
+                break
+            }
+        }
+        if i == N {
+            _Primes = append(_Primes, n)
+        }
+    }
+
+    N = len(_Primes)
+
+    for n := uint64(10001); n < 100000000; n += 2 {
+        for i = 1; i < N; i++ {
+            if n%_Primes[i] == 0 {
+                break
+            }
+        }
+        if i == N {
+            _Primes = append(_Primes, n)
+        }
+    }
+
+    N = len(_Primes)
+    _N = N
+}
