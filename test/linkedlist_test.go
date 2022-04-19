@@ -216,3 +216,22 @@ func reverseLinkedlist(node *ListNode) {
 		cur = next
 	}
 }
+
+
+// 移除有序链表重复元素：快慢指针
+func rmDuplicateList(head *ListNode) *ListNode {
+	if head == nil {
+		return nil
+	}
+	slow, fast := head, head.Next
+	for fast != nil {
+		if fast.Val != slow.Val {
+			slow.Next = fast
+			slow = slow.Next
+		}
+		fast = fast.Next
+	}
+	// 断开与后⾯重复元素的连接
+	slow.Next = nil
+	return head
+}

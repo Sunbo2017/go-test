@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 	"testing"
+	"time"
 )
 
 // map append问题
@@ -220,8 +221,7 @@ func judgePrime(n int) bool {
 	if n==1 || n==0 {
 		return false
 	}
-	// for i:=2;i*i<n;i++ {
-	for i:=2;i<n;i++ {
+	for i:=2;i*i<=n;i++ {
 		if n%i == 0 {
 			return false
 		}
@@ -230,6 +230,7 @@ func judgePrime(n int) bool {
 }
 
 // 输出一亿内的所有素数
+// 十个协程并发，用时38秒左右
 func findPrimeAll(n int) {
 	total := 0
 	numChan := make(chan int, n)
@@ -264,9 +265,10 @@ func findPrimeAll(n int) {
 	// }
 	for {
 		_, ok := <- resChan
-		total++
 		if !ok {
 			break
+		} else {
+			total++
 		}
 	}
 	
@@ -285,11 +287,19 @@ func findPrime(in,exit chan int, out chan string, num int) {
 }
 
 func TestFindPrime(t *testing.T) {
+	start := time.Now().Unix()
 	// findPrimeAll(100000000)
-	_CalcPrimes()
-    fmt.Println(_Primes)
-    fmt.Println(100000000, "以内的素数个数为", _N)
+
+	// _CalcPrimes()
+    // fmt.Println(_Primes)
+    // fmt.Println(100000000, "以内的素数个数为", _N)
+
+	findPrimeBySieve(100000000)
 	fmt.Println("finish...")
+	end := time.Now().Unix()
+
+	cost := end - start
+	t.Logf("cost:%v", cost)
 }
 
 
@@ -332,4 +342,66 @@ func _CalcPrimes() {
 
     N = len(_Primes)
     _N = N
+}
+
+
+// 生成n个数的channel
+func generate(ch chan int, n int) {
+    for i := 2; i<=n; i++ {
+        ch <- i // Send 'i' to channel 'ch'.
+    }
+}
+
+
+// Copy the values from channel 'in' to channel 'out',
+// removing those divisible by 'prime'.
+func filter(in, out chan int, prime int) {
+    for {
+        i := <-in // Receive value of new variable 'i' from 'in'.
+        if i%prime != 0 {
+            out <- i // Send 'i' to channel 'out'.
+        }
+    }
+}
+
+// 求素数：用小于n的所有素数去除n,如果都不能整除，则n为素数
+// 一个素数不能整除的那个比它自身大的最小的那个数就是素数
+// The prime sieve: Daisy-chain filter processes together.
+// 网上都是这套代码，实际效率贼差，不可取
+func findPrimeBySieve1(n int) {
+    ch := make(chan int) // Create a new channel.
+    go generate(ch, n)      // Start generate() as a goroutine.
+    for {
+        prime := <-ch
+        // fmt.Printf("prime:%v,", prime)
+        ch1 := make(chan int)
+        go filter(ch, ch1, prime)
+        ch = ch1
+    }
+}
+
+// 筛法求素数：依次去掉已知素数的所有倍数
+// 筛法确实强，单协程执行完只需1秒多时间
+func findPrimeBySieve(n int) {
+	isPrime := make([]bool, n)
+	for i:=0;i<n;i++ {
+		isPrime[i] = true
+	}
+	for i := 2; i * i < n; i++ {
+		if isPrime[i] {
+			for j := i * i; j < n; j += i {
+				isPrime[j] = false;
+			}
+		}
+	}
+	
+	count := 0;
+	for i := 2; i < n; i++ {
+		if isPrime[i] {
+			// fmt.Printf("%v,", i)
+			count++
+		} 
+	}
+	
+	fmt.Println("total:", count)
 }

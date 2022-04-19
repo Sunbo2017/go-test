@@ -231,3 +231,23 @@ func TestTopK(t *testing.T) {
 	result := searchTopK(arr, 5)
 	fmt.Println(result)
 }
+
+// 去除有序数组重复元素：使用快慢指针
+func rmDuplicateArray(arr []int) {
+	slow, fast := 0, 1
+	for fast < len(arr) {
+		if arr[fast] != arr[slow] {
+			slow++
+			// 维护 arr[0..slow] ⽆重复,神来之笔
+			arr[slow] = arr[fast]
+		}
+		fast++
+	}
+	// ⻓度为索引 + 1
+	fmt.Println(arr[:slow+1])
+}
+
+func TestRmDuplicates(t *testing.T) {
+	arr := []int{1,1,1,2,2,2,3,3,4,5,6,6,7}
+	rmDuplicateArray(arr)
+}
