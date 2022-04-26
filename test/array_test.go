@@ -302,3 +302,26 @@ func TestRemoveElements(t *testing.T) {
 	count := removeElements(nums, val)
 	t.Log(count)
 }
+
+
+// 给定⼀个不重复的排序数组和⼀个⽬标值，在数组中找到⽬标值，并返回其索引。
+// 如果⽬标值不存在于数组中，返回它将会被按顺序插⼊的位置。
+// 二分查找变种题
+func searchInsert(nums []int, target int) int {
+	low, high := 0, len(nums)-1
+	for low <= high {
+		mid := low + (high-low)>>1 //右移一位相当于除2
+		if nums[mid] == target {
+			return mid
+		}
+		if nums[mid] > target {
+			high = mid - 1
+		} else {
+			if (mid == len(nums)-1) || (nums[mid+1] >= target) {
+				return mid + 1
+			}
+			low = mid + 1
+		}
+	}
+	return 0
+}
