@@ -83,16 +83,23 @@ func makeSteps(steps []int) []step {
 	return list
 }
 
-func TestStepWater1(t *testing.T) {
-	steps := []int{0, 0, 2, 1, 2, 3, 0, 1, 3, 2}
-	water := 0	
+func countStapWater (steps []int) int {
+	water := 0
 	stepList := makeSteps(steps)
 	for i:=1; i<len(steps)-1; i++ {
-		increment := Min(stepList[i].leftMax - stepList[i].val, stepList[i].rightMax - stepList[i].val)
-		if increment > 0 {
+		left := stepList[i].leftMax - stepList[i].val
+		right := stepList[i].rightMax - stepList[i].val
+		if left > 0 && right > 0 {
+			increment := Min(left, right)
 			water += increment
 		}
 	}
+	return water
+}
+
+func TestStepWater1(t *testing.T) {
+	steps := []int{0, 0, 2, 1, 2, 3, 0, 1, 3, 2}
+	water := countStapWater(steps)
 	t.Logf("water:%v", water)
 }
 

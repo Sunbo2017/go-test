@@ -279,6 +279,22 @@ func TestJudgeSerchTree(t *testing.T) {
 	fmt.Println(array)
 }
 
+//在BST中判断一个数是否存在(我的treeNode结构value是字符串，所以选用二分法不太合适，只需理解算法逻辑即可)
+func judgeExistInTree(tree *treeNode, target string) bool {
+	if tree == nil {
+		return false
+	}
+	if tree.value == target {
+		return true
+	}
+	// 参考二分查找算法，提升查找效率
+	if target > tree.value {
+		return judgeExistInTree(tree.right, target)
+	} else {
+		return judgeExistInTree(tree.left, target)
+	}
+}
+
 func TestJudgeSerchTree1(t *testing.T) {
 	node := createTree()
 	//因为我的treeNode结构value为string，暂写为如下形式

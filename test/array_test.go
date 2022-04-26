@@ -251,3 +251,54 @@ func TestRmDuplicates(t *testing.T) {
 	arr := []int{1,1,1,2,2,2,3,3,4,5,6,6,7}
 	rmDuplicateArray(arr)
 }
+
+// leetcode-55:给定一个非负整数数组，数组中每个元素代表你在该位置可以跳跃的最大距离，
+// 从数组第一个位置开始，判断能否到达最后一个位置
+// 应用贪心算法：每⼀步都做出⼀个局部最优的选择，最终的结果就是全局最优。
+func judgeJump2last(arr []int) bool {
+	n, far := len(arr), 0
+	for i:=0;i<n-1;i++ {
+		// 不断计算能跳到的最远距离
+		far = Max(far, i+arr[i])
+		// 可能碰到了 0，卡住跳不动了
+		if far <= i {
+			return false
+		}
+	}
+	return far > n-1
+}
+
+func TestJump(t *testing.T) {
+	arr := []int{3,2,1,0,4,5}
+	res := judgeJump2last(arr)
+	t.Log(res)
+}
+
+
+// leetcode-27:给定一个num数组和一个数字，在仅使用O(1)额外空间的情况下删除数组中该数字,返回删除后数组长度
+// 如：nums = [0,1,2,2,3,0,4,2], val = 2,删除后数组变为[0,1,3,0,4],返回5
+func removeElements(nums []int, val int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	// 记录不重复元素数量
+	count := 0
+	for i:=0;i<len(nums);i++ {
+		if nums[i] != val {
+			if i != count {
+				// 交换位置，目标元素后移
+				nums[i], nums[count] = nums[count], nums[i]
+			}
+			count++
+		}
+	}
+	fmt.Println(nums[:count])
+	return count
+}
+
+func TestRemoveElements(t *testing.T) {
+	nums := []int{0,1,2,2,3,0,4,2}
+	val := 2
+	count := removeElements(nums, val)
+	t.Log(count)
+}
