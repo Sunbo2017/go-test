@@ -110,6 +110,28 @@ func quickSort(arr []int, start, end int) {
     }
 }
 
+func quickSort1(a []int, lo, hi int) {
+	if lo >= hi {
+	return
+	}
+	p := partitionSort(a, lo, hi)
+	quickSort1(a, lo, p-1)
+	quickSort1(a, p+1, hi)
+}
+
+func partitionSort(a []int, lo, hi int) int {
+	pivot := a[hi]
+	i := lo - 1
+	for j := lo; j < hi; j++ {
+		if a[j] <= pivot {
+			i++
+			a[j], a[i] = a[i], a[j]
+		}
+	}
+	a[i+1], a[hi] = a[hi], a[i+1]
+	return i + 1
+}
+
 // 归并排序，算法是采用分治法（Divide and Conquer）的一个非常典型的应用，且各层分治递归可以同时进行。
 // 当我们要排序这样一个数组的时候，归并排序法首先将这个数组分成一半。
 // 然后想办法把左边的数组给排序，右边的数组给排序，之后呢再将它们归并起来。
@@ -199,7 +221,7 @@ func HeapSort(arr []int) {
 
 func TestMySort(t *testing.T) {
 	//数量级，控制参与排序的数字总量
-	num := 20
+	num := 10
 	array := []int{}
 	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8, 10, 20, 50, 21, 16, 12, 18, 23, 30, 40, 32}
 	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8}
@@ -221,7 +243,7 @@ func TestMySort(t *testing.T) {
 	// MergeSort(array, 0, len(array)-1) //数量级10000：3008000
 	// HeapSort(array) //数量级10000：2000200
 	// QuickSort(array, 0, len(array)-1) //数量级10000：1000300
-	quickSort(array, 0, len(array)-1) //数量级10000：1000300
+	quickSort1(array, 0, len(array)-1) //数量级10000：1000300
 
 	// fmt.Println(array)
 	end := time.Now().UnixNano()

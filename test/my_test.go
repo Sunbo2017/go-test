@@ -412,3 +412,54 @@ func findPrimeBySieve(n int) {
 	
 	fmt.Println("total:", count)
 }
+
+
+//一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法
+//递归
+func jumpFloor1(N int) int {
+	if N <= 0 {
+	  return 0
+	}
+	if N == 1 || N == 2 {
+	  return N
+	}
+	return jumpFloor1(N-1) + jumpFloor1(N-2)
+}
+
+//动态规划
+func jumpFloor2(N int) int {
+	if N <= 0 {
+	  return 0
+	}
+	if N == 1 || N == 2 {
+	  return N
+	}
+	a, b := 1, 2
+	for i := 3; i <= N; i++ {
+	  a, b = b, a+b
+	}
+	return b
+}
+
+// 使用dpTable
+func jumpFloor3(n int) int {
+	if n < 1 {
+		return 0
+	}
+	if n == 1 || n == 2 {
+		return n
+	}
+
+	//存储每一步的结果
+	dpTable := make([]int, n+1)
+
+	// base case
+	dpTable[1] = 1
+	dpTable[2] = 2
+
+	// 状态转移
+	for i := 3; i <= n; i++ {
+		dpTable[i] = dpTable[i-1] + dpTable[i-2]
+	}
+	return dpTable[n]
+}
