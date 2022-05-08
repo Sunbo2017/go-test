@@ -94,6 +94,7 @@ func isValid(s string) bool {
 				continue
 			}
 		}
+		// 后进行入栈操作，确保栈顶元素和当前字符能进行括号对比较
 		stack.Push(s[i])
 	}
 	// 到最后如果栈不为空，则说明未完全匹配掉（完全匹配的话，栈只能为空）
@@ -161,4 +162,35 @@ func TestValid(t *testing.T) {
 	fmt.Println(isValid(s1))
 	fmt.Println(isValidSample(s2))
 	fmt.Println(isValid(s3))
+}
+
+
+// 单调栈:单调栈实际上就是栈，只是利⽤了⼀些巧妙的逻辑，使得每次新元素⼊栈后，栈内的元素都保持有序（单调递增或单调递减）。
+// 给你⼀个数组 nums，请你返回⼀个等⻓的结果数组，结果数组中对应索引存储着下⼀个更⼤元素，如果没有更⼤的元素，就存 -1。
+// ⽐如说，输⼊⼀个数组 nums = [2,1,2,4,3]，你返回数组 [4,2,4,-1,-1]。
+// 解释：第⼀个 2 后⾯⽐ 2 ⼤的数是 4; 1 后⾯⽐ 1 ⼤的数是 2；第⼆个 2 后⾯⽐ 2 ⼤的数是 4; 
+// 4 后⾯没有⽐ 4⼤的数，填 -1；3 后⾯没有⽐ 3 ⼤的数，填 -1。
+func findNextGreater(nums []int) []int {
+	res := make([]int, len(nums))
+	s := NewStack()
+	// 倒序入栈
+	for i := len(nums)-1; i>=0; i-- {
+		for s.Len() > 0 && s.Peek().(int) <= nums[i] {
+			// 小于当前元素的值都出栈
+			s.Pop()
+		}
+		if s.Len() > 0 {
+			res[i] = s.Peek().(int)
+		} else {
+			res[i] = -1
+		}
+		s.Push(nums[i])
+	}
+	return res
+}
+
+func TestNextGreater(t *testing.T) {
+	nums := []int{2,3,5,2,4,7,6}
+	res := findNextGreater(nums)
+	t.Log(res)
 }

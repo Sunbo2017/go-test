@@ -238,7 +238,7 @@ func rmDuplicateArray(arr []int) {
 	for fast < len(arr) {
 		if arr[fast] != arr[slow] {
 			slow++
-			// 维护 arr[0..slow] ⽆重复,神来之笔
+			// 维护 arr[0..slow] ⽆重复,神来之笔,将重复元素替换为后边的非重复元素
 			arr[slow] = arr[fast]
 		}
 		fast++
