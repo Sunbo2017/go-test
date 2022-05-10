@@ -286,7 +286,7 @@ func removeElements(nums []int, val int) int {
 	for i:=0;i<len(nums);i++ {
 		if nums[i] != val {
 			if i != count {
-				// 交换位置，目标元素后移
+				// 交换位置，相等元素后移，不等元素前移
 				nums[i], nums[count] = nums[count], nums[i]
 			}
 			count++

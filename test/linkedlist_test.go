@@ -11,10 +11,10 @@ type ListNode struct {
 }
 
 func (n *ListNode) Show() {
-	fmt.Printf("%v :: %v\n", n.Val, n.Next)
+	fmt.Printf("val:%v -> next:%+v\n", n.Val, n.Next)
 	for n.Next != nil {
 		n = n.Next
-		fmt.Printf("%v :: %v\n", n.Val, n.Next)
+		fmt.Printf("val:%v -> next:%+v\n", n.Val, n.Next)
 	}
 }
 
@@ -204,10 +204,13 @@ func getCycleStart(node *ListNode) *ListNode {
 // 假如原链表为head->1->2->3->4->5->6->7，在遍历到2的时候，将2插入到头结点的后面，链表变为head->2->1->3->4->5->6->7，
 // 同理head->3->2->1->4->5->6->7等等。
 func reverseLinkedlist(node *ListNode) {
+	//node为头节点
 	if node == nil || node.Next == nil {
 		return
 	}
+	//暂存第二个节点
 	cur := node.Next.Next
+	//第一个节点的next置为nil，变为尾节点
 	node.Next.Next = nil
 	for cur != nil {
 		next := cur.Next //保存后续节点
@@ -234,4 +237,49 @@ func rmDuplicateList(head *ListNode) *ListNode {
 	// 断开与后⾯重复元素的连接
 	slow.Next = nil
 	return head
+}
+
+//k个一组反转链表，剩余链表长度不足k时，无需反转
+func reverseKGroup(head *ListNode, k int) *ListNode {
+	if head == nil {
+		return nil
+	}
+	a,b := head,head
+	for i := 0; i < k; i++ {
+		// 不⾜ k 个，不需要反转，base case
+		if b == nil {
+			return head
+		} 
+		b = b.Next
+	}
+	newHead := reverseB(a, b)
+	a.Next = reverseKGroup(b, k)
+	return newHead
+}
+
+//翻转区间[a,b)
+func reverseB(head *ListNode, b *ListNode) *ListNode {
+	if head == nil {
+		return nil
+	}
+	cur := head
+    var pre *ListNode = nil
+    for cur != b {
+		//直接翻转链表，next指向前置节点
+        pre, cur, cur.Next = cur, cur.Next, pre //这句话最重要
+    }
+    return pre
+}
+
+func TestReverseK(t *testing.T) {
+	head := &ListNode{0,nil}
+	node := head
+	for i := 0; i < 10; i++ {
+		node.Next = &ListNode{2 * i, nil}
+		node = node.Next
+	}
+	head.Next.Show()
+	fmt.Println("---------------")
+	res := reverseKGroup(head.Next, 4)
+	res.Show()
 }

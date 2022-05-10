@@ -150,3 +150,38 @@ func TestCompare(t *testing.T) {
 	// 如果待比较的字符串位数不等，则可能会出错
 	fmt.Println("3" > "15") //true
 }
+
+//查找最长回文子串：从中间字符开始依次比较前后字符，若相等即为回文子串，不等则继续寻找
+//中间位置可能是某个字符，如aba；也可能是空白，如aa
+func longestPalindrome(s string) string {
+    var sub, longest string
+    var mid int 
+    
+    for mid < len(s) {
+        // 对称点为空白，长度为偶数
+        sub = findLongestPalindromeByMid(s, mid-1, mid)
+        if len(sub) > len(longest) {
+            longest = sub
+        }
+        
+        // 对称点为某个字符，长度为奇数
+        sub = findLongestPalindromeByMid(s, mid-1, mid+1)
+        if len(sub) > len(longest) {
+            longest = sub
+        }
+        mid++
+    }
+    return longest
+}
+
+func findLongestPalindromeByMid(s string, left, right int) string {
+    for left >= 0 && right < len(s) {
+        if s[left] != s[right] {
+            break
+        }
+        left--
+        right++
+    }
+    //注意此处,left索引位置不相等后退出循环，所以相等的位置是left+1和right-1，即[left+1,right),左闭右开
+    return s[left+1:right]
+}
