@@ -185,3 +185,71 @@ func findLongestPalindromeByMid(s string, left, right int) string {
     //注意此处,left索引位置不相等后退出循环，所以相等的位置是left+1和right-1，即[left+1,right),左闭右开
     return s[left+1:right]
 }
+
+func TestLongest(t *testing.T) {
+	str := "abcdefedca"
+	subS := longestPalindrome(str)
+	t.Log(subS)
+}
+
+
+//金山云面试题：字符串加法：需使用纯字符串，不可转为int类型
+func AddStrNumber(a, b string) string {
+	l1, l2, max := len(a), len(b), 0
+	if l1 >= l2 {
+		max = l1
+	} else {
+		max = l2
+	}
+	//存储逆序的结果
+	var res []string
+	num1,num2 := make([]byte, max),make([]byte, max)
+	
+	c1,c2 := 0, 0
+	for i:=l1-1;i>=0;i-- {
+		//逆序存储字符串a每个字符，若a长度小于max，默认0补齐
+		// num1 = append(num1, a[i]-'0')
+		num1[c1] = a[i]-'0'
+		c1++
+	}
+	for i:=l2-1;i>=0;i-- {
+		//逆序存储字符串b每个字符，若b长度小于max，默认0补齐
+		// num2 = append(num2, b[i]-'0')
+		num2[c2] = b[i]-'0'
+		c2++
+	}
+	//保存进位值
+	var up byte = 0
+	for i:=0;i<max;i++ {
+		//注意先计算和吗，再更新进位值
+		sum := (up+num1[i]+num2[i])%10
+		up = (up+num1[i]+num2[i])/10
+		res = append(res, string(sum+'0'))
+	}
+	result := ""
+	c := len(res)-1
+	//逆序拼接数组元素获得正序的和
+	for i:=len(res)-1;i>=0;i-- {
+		//去除开头的0
+		if c == i && res[i]=="0" {
+			c--
+			continue
+		}
+		result += res[i]
+	}
+	return result
+}
+
+
+
+func TestAddStrNumber(t *testing.T) {
+	a,b := '2'-'0','3'-'0'
+	t.Log('0')
+	t.Log(a)
+	t.Log(b)
+	t.Log(a+b)
+
+	str1, str2 := "001234587669003", "00034579"// res=1234587703582
+	res := AddStrNumber(str1, str2)
+	t.Log(res)
+}

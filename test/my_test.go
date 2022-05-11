@@ -463,3 +463,38 @@ func jumpFloor3(n int) int {
 	}
 	return dpTable[n]
 }
+
+//金山云面试题：两个协程交替打印奇数偶数，必须保证按序输出
+func TestNum(t *testing.T) {
+	fmt.Println("Hello, World!")
+	a,b := make(chan int),make(chan int)
+	go printNum2(a,b)
+	go printNum1(a,b)
+	//先起协程，后向channel发数据，否则死锁
+	b <- 1
+	time.Sleep(2*time.Second)
+}
+
+func printNum1(intChan1,intChan2 chan int) {
+	//注意此处i必须为偶数，否则不会打印，也不会向channel发送信号
+	for i:=2;i<=100;i+=2 {
+		if _,ok := <-intChan1; ok {
+			if i%2 == 0 {
+				fmt.Printf("chan2:%v\n", i)
+				intChan2 <- i
+			}
+		}
+	}
+}
+
+func printNum2(intChan1,intChan2 chan int) {
+	//注意此处i必须为奇数，否则不会打印，也不会向channel发送信号
+	for i:=1;i<=100;i+=2 {
+		if _,ok := <-intChan2; ok {
+			if i%2 != 0 {
+				fmt.Printf("chan1:%v\n", i)
+				intChan1 <- i
+			}
+		}
+	}
+}
