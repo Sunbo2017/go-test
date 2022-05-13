@@ -5,6 +5,7 @@ import (
 	"sort"
 	"testing"
 	"time"
+	"sync"
 )
 
 // map append问题
@@ -495,6 +496,83 @@ func printNum2(intChan1,intChan2 chan int) {
 				fmt.Printf("chan1:%v\n", i)
 				intChan1 <- i
 			}
+		}
+	}
+}
+
+//血的教训，可以默写下来才叫掌握了算法思想
+func reverseListNode (head *ListNode) *ListNode {
+	if head == nil {
+		return nil
+	}
+	cur := head
+	var pre *ListNode = nil
+	for cur != nil {
+		// pre, cur, cur.Next = cur, cur.Next, pre
+
+		nxt := cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = nxt
+	}
+	return pre
+}
+
+
+//金山云二面：3个协程交替打印1，2，3，按序输出
+var wwg sync.WaitGroup
+
+func TestPrint3(t *testing.T) {
+	fmt.Println("Hello, World!")
+	
+	chan1,chan2,chan3 := make(chan int),make(chan int),make(chan int)
+	//wg := sync.WaitGroup()
+	wwg.Add(6)
+	go printNum11(chan1, chan2)
+	go printNum12(chan2, chan3)
+	go printNum13(chan3, chan1)
+	chan1 <- 1
+	
+	wwg.Wait()
+	close(chan1)
+	close(chan2)
+	close(chan3)
+	fmt.Println("FINISH")
+}
+
+func printNum11(chan1,chan2 chan int) {
+	for i:=0;i<2;i++ {
+		if _, ok := <- chan1; ok {
+		fmt.Println(1)
+		wwg.Done()
+		chan2 <- 1
+		}
+	}
+}
+
+func printNum12(chan1,chan2 chan int) {
+	for i:=0;i<2;i++ {
+		if _, ok := <- chan1; ok {
+		fmt.Println(2)
+		wwg.Done()
+		chan2 <- 1
+		}
+	}
+}
+
+func printNum13(chan1,chan2 chan int) {
+	for i:=0;i<2;i++ {
+		if _, ok := <- chan1; ok {
+		fmt.Println(3)
+		
+		// if i == 1 {
+		// 	wg.Done()
+		// 	break
+		// }
+		fmt.Println("F---")
+		//必须先done，确保其它协程结束后不会再向另一个协程发出信号
+		wwg.Done()
+		chan2 <- 1
 		}
 	}
 }

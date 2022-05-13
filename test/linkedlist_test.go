@@ -203,6 +203,7 @@ func getCycleStart(node *ListNode) *ListNode {
 // 从链表的第二个结点开始，把遍历到的结点插入到头结点的后面，直到遍历结束。
 // 假如原链表为head->1->2->3->4->5->6->7，在遍历到2的时候，将2插入到头结点的后面，链表变为head->2->1->3->4->5->6->7，
 // 同理head->3->2->1->4->5->6->7等等。
+// 这种算法必须保证有虚拟头节点
 func reverseLinkedlist(node *ListNode) {
 	//node为头节点
 	if node == nil || node.Next == nil {
@@ -253,6 +254,7 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 		b = b.Next
 	}
 	newHead := reverseB(a, b)
+	//连接下一段链表的头节点
 	a.Next = reverseKGroup(b, k)
 	return newHead
 }
@@ -266,7 +268,12 @@ func reverseB(head *ListNode, b *ListNode) *ListNode {
     var pre *ListNode = nil
     for cur != b {
 		//直接翻转链表，next指向前置节点
-        pre, cur, cur.Next = cur, cur.Next, pre //这句话最重要
+        // pre, cur, cur.Next = cur, cur.Next, pre //这句话最重要
+
+		nxt := cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = nxt
     }
     return pre
 }
