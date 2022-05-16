@@ -46,6 +46,7 @@ func longestSubstring(s string) int {
 		result = Max(result, right-left)
 		// fmt.Println(s[left:right])
 	}
+	fmt.Println(s[left:right])
 	return result
 }
 
@@ -58,13 +59,14 @@ func longestSubstring1(s string) int {
 	bitSet := make(map[byte]int, 256)
 	// 结果，窗口起点和终点
 	result, left, right := 0, 0, 0
-	for left < len(s) {
-		if right < len(s) && bitSet[s[right]] == 0 {
+	//右指针遇到重复值左指针就会接着走并将原来位置归0，所以左右指针之间一定是不重复子串，右指针走到头时，左指针也没必要继续走
+	for right < len(s) {
+		if bitSet[s[right]] == 0 {
 			// 右侧已经检查过的字符置为1
 			bitSet[s[right]] = 1
 			right++
 		} else {
-			//将已比较过的left位值归0，开始下一轮查找
+			//将已比较过的left位值归0，开始下一轮查找，知道左指针走过了相等的元素后，右指针接着往下走
 			bitSet[s[left]] = 0
 			fmt.Println(s[left:right])
 			left++
@@ -72,14 +74,19 @@ func longestSubstring1(s string) int {
 		result = Max(result, right-left)
 		// fmt.Println(s[left:right])
 	}
+	fmt.Println(s[left:right])
 	return result
 }
 
 func TestLongestSubstring(t *testing.T) {
 	// s := "pwwkew"
-	s := "abccbb"
-	l := longestSubstring(s)
-	fmt.Println(l)
+	// s := "abrfccbde"
+	s := "aaaccbde"
+	l1 := longestSubstring(s)
+	fmt.Println(l1)
+	fmt.Println("---------")
+	l2 := longestSubstring1(s)
+	fmt.Println(l2)
 }
 
 // 查找 substring,如果在母串中找到了子串，返回子串在母串中出现的下标，
@@ -221,7 +228,7 @@ func AddStrNumber(a, b string) string {
 	//保存进位值
 	var up byte = 0
 	for i:=0;i<max;i++ {
-		//注意先计算和吗，再更新进位值
+		//注意先计算和，再更新进位值
 		sum := (up+num1[i]+num2[i])%10
 		up = (up+num1[i]+num2[i])/10
 		res = append(res, string(sum+'0'))
@@ -240,8 +247,6 @@ func AddStrNumber(a, b string) string {
 	return result
 }
 
-
-
 func TestAddStrNumber(t *testing.T) {
 	a,b := '2'-'0','3'-'0'
 	t.Log('0')
@@ -251,5 +256,65 @@ func TestAddStrNumber(t *testing.T) {
 
 	str1, str2 := "001234587669003", "00034579"// res=1234587703582
 	res := AddStrNumber(str1, str2)
+	t.Log(res)
+}
+
+//字符串乘法
+func MultiStrNumber(a, b string) string {
+	l1, l2 := len(a), len(b)
+
+	var res [][]byte 
+	//进位值
+	up := byte(0)
+	for i:= l1-1;i>=0;i-- {
+		n1 := a[i]-'0'
+		//逆序存储每一位
+		r := []byte{}
+		for j:=l2-1;j>=0;j-- {
+			n2 := b[j]-'0'
+			sum := (n1*n2+up)
+			cur := sum%10
+			up = sum/10
+			r = append(r, cur)
+		}
+		if up >0 {
+			r = append(r, up)
+		}
+		reverse := reverseArray(r)
+		c := l1-1-i
+		//从第二轮乘积开始在末位补0
+		if c >= 0 {
+			add := make([]byte, c)
+			reverse = append(reverse, add...)
+		}
+		res = append(res, reverse)
+	}
+	temp := byteArray2str(res[0])
+	for i:=1;i<len(res);i++ {
+		cur := byteArray2str(res[i])
+		temp = AddStrNumber(cur, temp)
+	}
+	return temp
+}
+
+func reverseArray(arr []byte) []byte {
+	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
+		arr[i], arr[j] = arr[j], arr[i]
+	}
+	return arr
+}
+
+func byteArray2str(arr []byte) string {
+	res := ""
+	for _, v := range arr {
+		res += string(v+'0')
+	}
+	return res
+}
+
+func TestMultiStrNumber(t *testing.T) {
+	a := "123123"
+	b := "20000111"
+	res := MultiStrNumber(a, b)
 	t.Log(res)
 }
