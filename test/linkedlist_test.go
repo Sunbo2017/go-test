@@ -146,7 +146,7 @@ func partion(start, end *ListNode) *ListNode {
 // 取出单链表倒数第k个元素：使用快慢指针
 // 最简单粗暴方法遍历一遍链表，数据存到数组中，遍历结束后直接取数组倒数第k个值
 // 使用两个距离相差k的指针，第一个node开始走时，k--，k=0时，第二个node开始走；
-// 当第一个node走到结尾时，第二个node刚好位于倒数第k的位置
+// 当第一个node走到结尾时，第二个node刚好位于倒数第k的位置，快指针和慢指针一直保持k个距离
 func findBackwardsK(node *ListNode, k int) *ListNode {
 	target := node
 	current := node
@@ -159,6 +159,43 @@ func findBackwardsK(node *ListNode, k int) *ListNode {
 		}
 	}
 	return target
+}
+
+// 移除单链表倒数第k个元素
+// 注意边界问题，要移除倒数第k个节点，实际要找到倒数第k+1个节点
+func rmBackwardsK(node *ListNode, k int) *ListNode {
+	//k+1保证取到倒数第k个节点的前一个节点
+	k += 1
+	target := node
+	current := node
+	for current.Next != nil {
+		current = current.Next
+		k--
+		if k <= 0 {
+			target = target.Next
+		}
+		// if k > 0 {
+		// 	k--
+		// } else {
+		// 	target = target.Next
+		// }
+	}
+	//直接跳过倒数第k个节点指向下一个节点
+	target.Next = target.Next.Next
+	return node
+}
+
+func TestRmBackKList(t *testing.T) {
+	head := &ListNode{0,nil}
+	node := head
+	for i := 1; i <= 10; i++ {
+		node.Next = &ListNode{i, nil}
+		node = node.Next
+	}
+	head.Next.Show()
+	fmt.Println("---------------")
+	res := rmBackwardsK(head.Next, 4)
+	res.Show()
 }
 
 
