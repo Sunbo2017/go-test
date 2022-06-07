@@ -112,7 +112,7 @@ func quickSort(arr []int, start, end int) {
 
 func quickSort1(a []int, lo, hi int) {
 	if lo >= hi {
-	return
+		return
 	}
 	p := partitionSort(a, lo, hi)
 	quickSort1(a, lo, p-1)
@@ -124,10 +124,12 @@ func partitionSort(a []int, lo, hi int) int {
 	i := lo - 1
 	for j := lo; j < hi; j++ {
 		if a[j] <= pivot {
+			//i为慢指针，记录大于基准值的元素位置索引
 			i++
 			a[j], a[i] = a[i], a[j]
 		}
 	}
+	//确定基准值的位置并置换
 	a[i+1], a[hi] = a[hi], a[i+1]
 	return i + 1
 }

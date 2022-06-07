@@ -258,6 +258,27 @@ func reverseLinkedlist(node *ListNode) {
 	}
 }
 
+//直接反转链表：当前节点的next指向前一个节点
+func reverseLinkedlist1(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return nil
+	}
+	cur := head
+	var pre *ListNode = nil
+	for cur != nil {
+
+		//直接反转
+		// pre, cur, cur.Next = cur, cur.Next, pre
+
+		//暂存next指针
+		nxt := cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = nxt
+	}
+	return pre
+}
+
 
 // 移除有序链表重复元素：快慢指针
 func rmDuplicateList(head *ListNode) *ListNode {
@@ -313,6 +334,19 @@ func reverseB(head *ListNode, b *ListNode) *ListNode {
 		cur = nxt
     }
     return pre
+}
+
+func TestReverseList(t *testing.T) {
+	head := &ListNode{0,nil}
+	node := head
+	for i := 0; i < 10; i++ {
+		node.Next = &ListNode{2 * i, nil}
+		node = node.Next
+	}
+	head.Next.Show()
+	fmt.Println("---------------")
+	res := reverseLinkedlist1(head.Next)
+	res.Show()
 }
 
 func TestReverseK(t *testing.T) {
