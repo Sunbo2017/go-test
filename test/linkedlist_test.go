@@ -361,3 +361,53 @@ func TestReverseK(t *testing.T) {
 	res := reverseKGroup(head.Next, 4)
 	res.Show()
 }
+
+
+//判断链表是否是回文链表
+//如果可以使用额外存储结构的话，可以遍历链表把每个节点的元素都存入一个数组，然后判断数组是否是回文数组就可以
+//如果不使用额外数组空间，可以使用链表的后续遍历，模仿双指针操作来判断，代码如下
+var left *ListNode
+func judgeListBack(head *ListNode) bool {
+	left = head
+	return traverse(head)
+}
+
+func traverse(right *ListNode) bool {
+	//递归结束条件
+	if right == nil {
+		return true
+	}
+
+	res := traverse(right.Next)
+    //后序遍历代码:后续遍历可以视为栈操作，会最先取到最后节点的值
+	res = res && (left.Val == right.Val)
+	left = left.Next
+	return res
+}
+
+
+//使用快慢指针技巧可以在完全不使用额外空间的情况下实现判断，
+//快慢指针找到链表中点，然后反转后半段链表和原链表进行比较，代码如下：
+func judgeListBack1(head *ListNode) bool {
+	fast, slow := head, head
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	//遍历结束后，slow位于链表中点
+	if fast != nil {
+		//fast指针不为nil,说明链表长度为基数，slow再向前走一步
+		slow = slow.Next
+	}
+	//从slow节点开始反转链表
+	right := reverseLinkedlist1(slow)
+	left := head
+	for right != nil {
+		if left.Val != right.Val {
+			return false
+		}
+		left = left.Next
+		right = right.Next
+	}
+	return true
+}
