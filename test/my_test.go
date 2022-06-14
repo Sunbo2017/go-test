@@ -576,3 +576,64 @@ func printNum13(chan1,chan2 chan int) {
 		}
 	}
 }
+
+//判断数独是否有效
+func isValidSudoku(board [][]byte) bool {
+	for i := 0; i < 9; i++ {
+		m1 := make(map[byte]bool)
+		m2 := make(map[byte]bool)
+		m3 := make(map[byte]bool)
+		fmt.Printf("i: %d, num[i]: %v\n", i, board[i])
+
+		// 判断每一行是否重复
+		for j := 0; j < 9; j++ {
+			if board[i][j] != '.' {
+				// fmt.Printf("j1: %d, num[j]: %v\n", j, board[i][j])
+				if m1[board[i][j]] {
+					return false
+				}
+				m1[board[i][j]] = true
+			}
+
+			// 判断每一列是否重复
+			if board[j][i] != '.' {
+				// fmt.Printf("j2: %d, num[j]: %v\n", j, board[j][i])
+				if m2[board[j][i]] {
+					return false
+				}
+				m2[board[j][i]] = true
+			}
+
+			// 判断9宫格内的数据是否重复
+			row := (i%3)*3 + j%3
+			col := (i/3)*3 + j/3
+			if board[row][col] != '.' {
+				fmt.Printf("board[%d][%d] = %v;", row, col, board[row][col]-'0')
+				// fmt.Printf("j3: %d, num[j]: %v\n", j, board[row][col])
+				if m3[board[row][col]] {
+					return false
+				}
+				m3[board[row][col]] = true
+			}
+		}
+		fmt.Println("next row...")
+	}
+	return true
+}
+
+func TestValidSudoku(t *testing.T) {
+	//'0'的ascii码值为48，所以'5'的码值为48+5=53
+	board := [][]byte{
+		{'5', '3', '.', '.', '7', '.', '.', '.', '.'},
+		{'6', '.', '.', '1', '9', '5', '.', '.', '.'},
+		{'.', '9', '8', '.', '.', '.', '.', '6', '.'},
+		{'8', '.', '.', '.', '6', '.', '.', '.', '3'},
+		{'4', '.', '.', '8', '.', '3', '.', '.', '1'},
+		{'7', '.', '.', '.', '2', '.', '.', '.', '6'},
+		{'.', '6', '.', '.', '.', '.', '2', '8', '.'},
+		{'.', '.', '.', '4', '1', '9', '.', '.', '5'},
+		{'.', '.', '.', '.', '8', '.', '.', '7', '9'},
+	}
+	sudoku := isValidSudoku(board)
+	fmt.Println(sudoku)
+}

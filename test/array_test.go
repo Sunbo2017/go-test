@@ -281,7 +281,7 @@ func removeElements(nums []int, val int) int {
 	if len(nums) == 0 {
 		return 0
 	}
-	// 记录不重复元素数量
+	// 记录相等数字的下标位置
 	count := 0
 	for i:=0;i<len(nums);i++ {
 		if nums[i] != val {
