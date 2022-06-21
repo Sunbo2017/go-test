@@ -325,3 +325,90 @@ func searchInsert(nums []int, target int) int {
 	}
 	return 0
 }
+
+// 快速模幂运算
+// 要求你的算法返回幂运算  a^b  的计算结果与 1337 取模（mod，也就是余数）后的结果。
+// 就是你先得计算幂  a^b  ，但是这个  b  会⾮常⼤，所以  b 是⽤数组的形式表⽰的。
+// 公式：(a * b) % k = (a % k)(b % k) % k
+var base = 1337;
+// 计算 a 的 k 次⽅然后与 base 求模的结果
+func mypow(a, k int) int {
+	// 对因⼦求模
+	a %= base
+	res := 1
+	for i := 0; i < k; i++ {
+		// 这⾥有乘法，是潜在的溢出点
+		res *= a;
+		// 对乘法结果求模
+		res %= base;
+	}
+	return res;
+}
+
+func superPow(a int, b []int) int {
+	if len(b) == 0 {
+		return 1
+	}
+	last := b[len(b)-1]
+	b = b[:len(b)-1]
+
+	part1 := mypow(a, last)
+	part2 := mypow(superPow(a, b), 10)
+
+	return (part1 * part2) % base
+}
+
+
+// 在一个二维数组array中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，
+// 每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+// [
+// [1,2,8,9],
+// [2,4,9,12],
+// [4,7,10,13],
+// [6,8,11,15]
+// ]
+// 给定 target = 7，返回 true。
+// 给定 target = 3，返回 false。 
+//暴力解法，双重循环，直接查找
+//采用分治法：
+// step 1：首先获取矩阵的两个边长，判断特殊情况。
+// step 2：首先以左下角为起点，若是它小于目标元素，则往右移动去找大的，若是他大于目标元素，则往上移动去找小的。
+// step 3：若是移动到了矩阵边界也没找到，说明矩阵中不存在目标值。
+func find2Array(arr [][]int, target int) bool {
+	a := len(arr)
+	b := len(arr[0])
+	if a == 0 || b == 0 {
+		return false
+	}
+	for i,j := a-1,0; i>=0&&j<b; {
+		//元素较大，往上走
+		if arr[i][j] > target {
+			i--
+		}else if arr[i][j] < target {
+			j++
+		}else {
+			return true
+		}
+	}
+	return false
+}
+
+// 给定一个长度为n的数组，返回其中任何一个峰值的索引
+// 峰值元素是指其值严格大于左右相邻值的元素
+// 二分查找
+func findHighest(arr []int) int {
+	low, high := 0, len(arr)-1
+	for low < high {
+		mid := low + (high-low)>>1
+		if arr[mid] > arr[mid+1] && arr[mid] > arr[mid-1] {
+			return mid
+		} else if arr[mid] > arr[mid+1] && arr[mid] < arr[mid-1] {
+			//右边是往下，不一定有坡峰,所以往左走
+			high = mid
+		} else {
+			//右边是往上，一定能找到波峰
+			low = mid + 1
+		}
+	}
+	return high
+}

@@ -396,7 +396,7 @@ func judgeListBack1(head *ListNode) bool {
 	}
 	//遍历结束后，slow位于链表中点
 	if fast != nil {
-		//fast指针不为nil,说明链表长度为基数，slow再向前走一步
+		//fast指针不为nil,说明链表长度为奇数，slow再向前走一步
 		slow = slow.Next
 	}
 	//从slow节点开始反转链表

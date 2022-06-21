@@ -318,3 +318,19 @@ func TestMultiStrNumber(t *testing.T) {
 	res := MultiStrNumber(a, b)
 	t.Log(res)
 }
+
+//判定子序列,如下：
+//s="abc", t="ahbgdc", return true
+//s = "axc", t = "ahbgdc", return false.
+//利⽤双指针  i, j  分别指向  s, t  ，⼀边前进⼀边匹配⼦序列
+func judgeSubStr(s, t string) bool {
+	i, j := 0, 0
+	for i < len(s) && j < len(t) {
+		if s[i] == t[j] {
+			i++
+		}
+		j++
+	} 
+	return i == len(s)
+}
+
