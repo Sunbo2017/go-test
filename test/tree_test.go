@@ -136,29 +136,19 @@ func TestDfsCreate(t *testing.T) {
 	fmt.Println(root.levelTraverse())
 }
 
-// 使用栈实现 dfs
-func dfsWithStack(root *treeNode) {
+//求二叉树最大深度
+func maxTreeDepth(root *treeNode) int {
 	if root == nil {
-		return
+		return 0
 	}
+	//返回子树深度+1
+	return Max(maxTreeDepth(root.left), maxTreeDepth(root.right)) + 1
+}
 
-	stack := NewStack()
-	stack.Push(root)
-	for stack.Len() > 0 {
-		node := stack.Pop().(*treeNode)
-		// 处理当前节点
-		fmt.Println(node.value)
-
-		// 先压入右节点
-		if node.right != nil {
-			stack.Push(node.right)
-		}
-
-		// 再压入左节点
-		if node.left != nil {
-			stack.Push(node.left)
-		}
-	}
+func TestMaxDepth(t *testing.T) {
+	tree := createTree()
+	depth := maxTreeDepth(tree)
+	t.Log(depth)
 }
 
 // 翻转二叉树 递归
@@ -191,6 +181,31 @@ func mirrorBTree2(root *treeNode) {
 		}
 	}
 
+}
+
+// 使用栈实现深度优先
+func dfsWithStack(root *treeNode) {
+	if root == nil {
+		return
+	}
+
+	stack := NewStack()
+	stack.Push(root)
+	for stack.Len() > 0 {
+		node := stack.Pop().(*treeNode)
+		// 处理当前节点
+		fmt.Println(node.value)
+
+		// 先压入右节点
+		if node.right != nil {
+			stack.Push(node.right)
+		}
+
+		// 再压入左节点
+		if node.left != nil {
+			stack.Push(node.left)
+		}
+	}
 }
 
 //队列实现广度优先

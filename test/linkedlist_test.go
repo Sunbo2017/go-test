@@ -411,3 +411,41 @@ func judgeListBack1(head *ListNode) bool {
 	}
 	return true
 }
+
+//反转部分链表
+//将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转，要求时间复杂度 O(n)，空间复杂度 O(1)
+//例如：给出的链表为 1→2→3→4→5→NULL, m=2,n=4,返回 1→4→3→2→5→NULL
+//思路：先找到第m个节点cur和前置节点pre，循环将cur后续节点插入到pre和cur之间
+func reverseListSection(head *ListNode, m, n int) *ListNode {
+	if head == nil || head.Next == nil {
+		return nil
+	}
+	cur, pre := head, head
+	for i:=1; i<m-1; i++ {
+		pre = pre.Next
+	}
+	cur = pre.Next
+
+	for i := m; i < n; i++ {
+		//暂存下一个节点
+		nxt := cur.Next
+		cur.Next = nxt.Next
+		//将后续节点插入到cur之前
+		nxt.Next = pre.Next
+		pre.Next = nxt
+	}
+	return head
+}
+
+func TestReverseSection(t *testing.T) {
+	head := &ListNode{0,nil}
+	node := head
+	for i := 1; i < 10; i++ {
+		node.Next = &ListNode{2 * i, nil}
+		node = node.Next
+	}
+	head.Show()
+	fmt.Println("---------------")
+	res := reverseListSection(head, 4, 8)
+	res.Show()
+}

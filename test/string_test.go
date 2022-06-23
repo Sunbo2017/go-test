@@ -334,3 +334,33 @@ func judgeSubStr(s, t string) bool {
 	return i == len(s)
 }
 
+
+// 定义重复字符串是由两个相同的字符串首尾拼接而成。例如："abcabc" 是一个长度为 6 的重复字符串，
+// 因为它由两个 "abc" 串拼接而成；"abcba" 不是重复字符串，因为它不能由两个相同的字符串拼接而成。
+// 给定一个字符串，请返回其最长重复子串的长度。
+// 若不存在任何重复字符子串，则返回 0。
+func maxRepeatSubstr(s string) int {
+	max := 0
+	for i := 0; i < len(s); i++ {
+		for j := i+2; j <= len(s); j++ {
+			sub := s[i:j]
+			if len(sub)%2 == 0 {
+				sub1 := sub[:len(sub)/2]
+				sub2 := sub[len(sub)/2:]
+				if sub1 == sub2 {
+					max = Max(max, len(sub))
+				}
+			}
+		}
+	}
+	return max
+}
+
+func TestMaxRepeat(t *testing.T) {
+	// s1 := "abcabcdd"
+	// t.Log(maxRepeatSubstr(s1))
+	// s2 := "abcab"
+	// t.Log(maxRepeatSubstr(s2))
+	s3 := "ababcdefcdef"
+	t.Log(maxRepeatSubstr(s3))
+}
