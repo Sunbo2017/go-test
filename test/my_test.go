@@ -196,6 +196,32 @@ func Test2Sum(t *testing.T){
 	fmt.Println(v2)
 }
 
+/**
+  * 
+  * @param numbers int整型一维数组 
+  * @param target int整型 
+  * @return int整型一维数组
+*/
+func twoSumIndex( numbers []int ,  target int ) []int {
+    // write code here
+    nmap := make(map[int]int,0)
+    for i, v := range numbers {
+        if val, ok := nmap[target-v]; ok {
+            return []int{val+1, i+1}
+        }else {
+            nmap[v] = i
+        }
+    }
+    return []int{}
+}
+
+func TestTwoSumIndex(t *testing.T) {
+	nums := []int{3,2,4}
+	target := 6
+	res := twoSumIndex(nums, target)
+	t.Log(res)
+}
+
 // 一个细胞的寿命是5min 他会在2min和4min 分别分裂出一个新细胞，请问n min后 ，有多少细胞 
 var sumn = 1
 func sum(n int) int{
@@ -637,3 +663,5 @@ func TestValidSudoku(t *testing.T) {
 	sudoku := isValidSudoku(board)
 	fmt.Println(sudoku)
 }
+
+//16进制转10进制

@@ -412,3 +412,49 @@ func findHighest(arr []int) int {
 	}
 	return high
 }
+
+//买卖股票最佳时机,只可以买入卖出一次
+func getMaxProfit1(prices []int) int {
+	min := 10000
+	max := 0
+	for _, v := range prices {
+		min = Min(min, v)
+		max = Max(max, v-min)
+	}
+	return max
+}
+
+//买卖股票最佳时机，可以买入卖出多次
+func getMaxProfit2(prices []int) int {
+	sum := 0
+	for i:=1;i<len(prices);i++ {
+		if prices[i] > prices[i-1] {
+			sum += prices[i] - prices[i-1]
+		}
+	}
+	return sum
+}
+
+//买卖股票最佳时机，最多可买入卖出两次
+func getMaxProfit3(prices []int) int {
+	// dp定义
+	// buy1 代表第1次买入的股票收益
+	// sell1代表第1次卖出的股票收益
+	// buy2 代表第2次买入的股票收益
+	// sell2代表第2次卖出的股票收益
+	
+	// 基本状态
+	// buy1=-price, sell1=0
+	// buy2=-price, sell2=0
+	buy1, sell1 := -prices[0], 0
+	buy2, sell2 := -prices[0], 0
+	for i := 1; i< len(prices); i++ {
+		price := prices[i]
+		// 转移方程
+		buy1  = Max(buy1, - price);
+		sell1 = Max(sell1, buy1 + price);
+		buy2  = Max(buy2, sell1 - price);
+		sell2 = Max(sell2, buy2 + price);
+	}
+	return sell2
+}

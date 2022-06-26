@@ -60,3 +60,22 @@ func isAttack(boards []int, c int, col int) bool {
 func TestQueen(t *testing.T) {
 	queen(8)
 }
+
+//2维数组存放n皇后结果
+// var results [][]int
+
+// func solveNQueens(n int) [][]int {
+//     //初始空棋盘，全部为0
+//     board := make([]int, n)
+// }
+
+// // 路径：board 中⼩于 row 的那些⾏都已经成功放置了皇后
+// // 选择列表：第 row ⾏的所有列都是放置皇后
+// // 结束条件：row 超过 board 的最后⼀⾏
+// func backtrack(board []int, row int) {
+//     if row == len(board) {
+//         results = append(results, board)
+//         return
+//     }
+    
+// }

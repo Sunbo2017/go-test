@@ -208,19 +208,19 @@ type NodeStack struct {
 }
  
  
- func (n *NodeStack) New() *NodeStack {
+func (n *NodeStack) New() *NodeStack {
 	//
 	n.Items = []Node{}
 	return n
- }
+}
  
  
- func (n *NodeStack) push(q Node) {
+func (n *NodeStack) push(q Node) {
 	n.Items = append(n.Items, q)
- }
+}
  
  
- func (n *NodeStack) pop() *Node {
+func (n *NodeStack) pop() *Node {
  
  
 	item := n.Items[len(n.Items)-1]
@@ -228,12 +228,12 @@ type NodeStack struct {
  
 	n.Items = n.Items[0: len(n.Items)-1]
 	return &item
- }
+}
  
  
- func (n *NodeStack) IsEmpty() bool {
+func (n *NodeStack) IsEmpty() bool {
 	return len(n.Items) == 0
- }
+}
  
  
  func (n *NodeStack) Size() int {

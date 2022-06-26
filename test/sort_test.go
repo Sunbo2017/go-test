@@ -276,7 +276,103 @@ func binarySearch(sortedArray []int, target int) int {
 
 //有一个整数数组，请你根据快速排序的思路，找出数组中第 k 大的数。
 //给定一个整数数组 a ,同时给定它的大小n和要找的 k 
-func findTopK(arr []int, n, k int) int {
+// step 1：进行一次快排，大元素在左，小元素在右，得到的中轴p点。
+// step 2：如果 p - low + 1 = k ，那么p点就是第K大。
+// step 3：如果 p - low + 1 > k，则第k大的元素在左半段，更新high = p - 1，执行step 1。
+// step 4：如果 p - low + 1 < k，则第k大的元素在右半段，更新low = p + 1, 且 k = k - (p - low + 1)，排除掉前面部分更大的元素，再执行step 1.
+func findTopK(arr []int, n,k int) int {
+	return quickSort2(arr, 0, n-1, k)
+}
 
-	return 0
+func TestFindTopK(t *testing.T) {
+	arr := []int{5,3,6,9,2,1,4}
+	res := findTopK(arr, len(arr), 5)
+	t.Log(res)
+}
+
+func quickSort2(arr []int, low, high, k int) int {
+	p := partitionSortDesc(arr, low, high)
+	if p-low+1 == k {
+		return arr[p]
+	} else if p-low+1 > k {
+		//递归左边
+		return quickSort2(arr, low, p - 1, k)
+	} else {
+		//递归右边
+		return quickSort2(arr, p+1, high, k)
+	}
+}
+
+// 由大到小排序
+func partitionSortDesc(a []int, lo, hi int) int {
+	pivot := a[hi]
+	i := lo - 1
+	for j := lo; j < hi; j++ {
+		if a[j] >= pivot {
+			//i为慢指针，记录小于基准值的元素位置索引
+			i++
+			a[j], a[i] = a[i], a[j]
+		}
+	}
+	//确定基准值的位置并置换
+	a[i+1], a[hi] = a[hi], a[i+1]
+	return i + 1
+}
+
+//获取无序数组最小的前k个数
+//可用优先队列解决，也可用快排思想
+// 对数组[l, r]一次快排partition过程可得到，[l, p), p, [p+1, r)三个区间,[l,p)为小于等于p的值
+// [p+1,r)为大于等于p的值。
+// 然后再判断p，利用二分法
+//     如果[l,p), p，也就是p+1个元素（因为下标从0开始），如果p+1 == k, 找到答案
+//     2。 如果p+1 < k, 说明答案在[p+1, r)区间内，
+//     3， 如果p+1 > k , 说明答案在[l, p)内 
+func findLastK(arr []int, k int) []int {
+	res := []int{}
+	if k == 0 || k > len(arr) {
+		return res
+	}
+	low, high := 0, len(arr)-1
+	for low < high {
+		p := partitionSort(arr, low, high)
+		if p+1 == k {
+			return arr[:k]
+		}
+		if p+1 < k {
+			low = p + 1
+		}else{
+			high = p - 1
+		}
+	}
+	return res
+}
+
+//使用最小优先队列解决,数组容量必须大于2k且后边有足够多的小数可以替换队列中的大数
+func findLastKWithQueue(arr []int, k int) []int {
+	queue := []int{}
+	if k == 0 || k > len(arr) {
+		return queue
+	}
+	for _, v := range arr {
+		if len(queue) < k {
+			//该队列必须保证由大到小有序
+			queue = append(queue, v)
+			// if v > queue[0] {
+			// 	queue[0], queue[i] = queue[i], queue[0]
+			// }
+		}else {
+			if v < queue[0] {
+				queue = queue[1:]
+				queue = append(queue, v)
+			}
+		}
+	}
+	return queue
+}
+
+func TestFindLastK(t *testing.T) {
+	arr := []int{5,3,6,9,2,1,4,10,11,7,9,15}
+	res := findLastK(arr, 5)
+	// res := findLastKWithQueue(arr, 5)
+	t.Log(res)
 }

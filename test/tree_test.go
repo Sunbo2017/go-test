@@ -105,6 +105,34 @@ func dfsHelper(node *treeNode, level int) {
 	dfsHelper(node.right, level+1)
 }
 
+//bfs实现层序遍历
+func levelOrder(root *TreeNode) [][]int {
+    // write code here
+    res := [][]int{}
+    if root == nil {
+        return res
+    }
+    queue := []*TreeNode{root}
+    for len(queue) > 0 {
+        level := []int{}
+        l := len(queue)
+		//此处遍历每一层
+        for i:=l;i>0;i-- {
+            node := queue[0]
+            level = append(level, node.Val)
+            if node.Left != nil {
+                queue = append(queue, node.Left)
+            }
+            if node.Right != nil {
+                queue = append(queue, node.Right)
+            }
+            queue = queue[1:]
+        }
+        res = append(res, level)
+    }
+    return res
+}
+
 func TestTreeNode(t *testing.T) {
 	node := createTree()
 	// root 1 3 7 8 4 9 10 2 5 11 12 6 13 14
