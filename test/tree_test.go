@@ -44,12 +44,44 @@ func createTree() *treeNode {
 	return root
 }
 
+func createTreeNode() *TreeNode {
+	root := &TreeNode{0, nil, nil}
+
+	addLeft(1, root)
+	addRight(2, root)
+
+	addLeft(3, root.Left)
+	addRight(4, root.Left)
+	addLeft(5, root.Right)
+	addRight(6, root.Right)
+
+	addLeft(7, root.Left.Left)
+	addRight(8, root.Left.Left)
+	addLeft(9, root.Left.Right)
+	addRight(10, root.Left.Right)
+	addLeft(11, root.Right.Left)
+	addRight(12, root.Right.Left)
+	addLeft(13, root.Right.Right)
+	addRight(14, root.Right.Right)
+
+	return root
+}
+
 func addLeftNode(value int, node *treeNode) {
 	node.left = &treeNode{value: fmt.Sprintf("left-%d", value)}
 }
 
 func addRightNode(value int, node *treeNode) {
 	node.right = &treeNode{value: fmt.Sprintf("right-%d", value)}
+}
+
+
+func addLeft(value int, node *TreeNode) {
+	node.Left = &TreeNode{Val: value}
+}
+
+func addRight(value int, node *TreeNode) {
+	node.Right = &TreeNode{Val: value}
 }
 
 // 先序遍历
@@ -131,6 +163,53 @@ func levelOrder(root *TreeNode) [][]int {
         res = append(res, level)
     }
     return res
+}
+
+//之字形层序遍历二叉树：第一层从左向右，下一层从右向左，一直这样交替
+func levelOrder之(root *TreeNode) [][]int {
+    // write code here
+    res := [][]int{}
+    if root == nil {
+        return res
+    }
+    queue := []*TreeNode{root}
+	f := 0
+    for len(queue) > 0 {
+		f++
+        level := []int{}
+        l := len(queue)
+		//此处遍历每一层
+        for i:=l;i>0;i-- {
+            node := queue[0]
+            level = append(level, node.Val)
+
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			
+            queue = queue[1:]
+        }
+		if f%2 == 0 {
+			//将level逆序
+			for i, j := 0, len(level)-1; i < j; i, j = i+1, j-1 {
+				level[i], level[j] = level[j], level[i]
+			}
+		}
+        res = append(res, level)
+    }
+    return res
+}
+
+func TestLevelOrder(t *testing.T) {
+	node := createTreeNode()
+	res := levelOrder(node)
+	t.Log(res)
+	t.Log("---------")
+	res = levelOrder之(node)
+	t.Log(res)
 }
 
 func TestTreeNode(t *testing.T) {

@@ -66,7 +66,7 @@ func longestSubstring1(s string) int {
 			bitSet[s[right]] = 1
 			right++
 		} else {
-			//将已比较过的left位值归0，开始下一轮查找，知道左指针走过了相等的元素后，右指针接着往下走
+			//将已比较过的left位值归0，开始下一轮查找，直到左指针走过了相等的元素后，右指针接着往下走
 			bitSet[s[left]] = 0
 			fmt.Println(s[left:right])
 			left++
@@ -356,6 +356,22 @@ func maxRepeatSubstr(s string) int {
 	return max
 }
 
+// func maxRepeatSubStr1(s string) int {
+// 	max := 0
+// 	mid := len(s)/2
+// 	//从中间向左比较重复子串
+// 	for i:=mid;i>0;i-- {
+// 		if s[:mid+1] == s[mid+1:(mid+1)*2] {
+// 			max = (mid+1) * 2
+// 			break
+// 		}
+// 	}
+
+// 	//从中间向右
+// 	for i:=mid+1;
+// 	return max
+// }
+
 func TestMaxRepeat(t *testing.T) {
 	// s1 := "abcabcdd"
 	// t.Log(maxRepeatSubstr(s1))
@@ -363,4 +379,5 @@ func TestMaxRepeat(t *testing.T) {
 	// t.Log(maxRepeatSubstr(s2))
 	s3 := "ababcdefcdef"
 	t.Log(maxRepeatSubstr(s3))
+	// t.Log(maxRepeatSubStr1(s3))
 }

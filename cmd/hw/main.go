@@ -142,6 +142,47 @@ func testSort1() {
 	}
 }
 
+
+func getOffset() []int {
+	offset := make([]int, 50)
+	offset[0],offset[1],offset[2]=1,2,4
+	for i:=3;i<50;i++ {
+		offset[i] = offset[i-1]+offset[i-2]+offset[i-3]
+	}
+	return offset
+} 
+
+func strEncode() {
+	line := 0
+	n, _ := fmt.Scan(&line)
+	if n == 0 {
+		return
+	}
+	s := bufio.NewScanner(os.Stdin)
+	s.Scan()
+	offset := getOffset()
+	for s.Scan() {
+		res := []byte{}
+		arr := s.Text()
+		fmt.Println(arr)
+		for i, a := range arr {
+			offsetI := offset[i]
+			fmt.Printf("off===%v\n",offsetI)
+			var v int64 = int64(a) + int64(offsetI)
+			if v > int64('z') {
+				v = (v-int64('z'))%26 + int64('a') - 1
+			}
+			res = append(res, byte(v))
+		}
+		fmt.Println(string(res))
+	}
+}
+
+
+
+
+
+
 func main() {
 	// testAdd()
 	// testAdd1()
@@ -149,5 +190,6 @@ func main() {
 	// testAdd3()
 	// testAdd4()
 	// testSort()
-	testSort1()
+	// testSort1()
+	strEncode()
 }

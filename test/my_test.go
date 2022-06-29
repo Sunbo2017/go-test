@@ -664,4 +664,38 @@ func TestValidSudoku(t *testing.T) {
 	fmt.Println(sudoku)
 }
 
-//16进制转10进制
+
+func producer(ch chan int) {
+	for i:=0;i<10;i++ {
+		ch <- i
+		fmt.Printf("produce:%v\n", i)
+		time.Sleep(2*time.Second)
+	}
+}
+
+func consumer(id int, ch chan int, ch1 chan int) {
+	for {
+		select {
+		case v1:=<- ch1:
+			fmt.Printf("stop:%v\n", v1)
+			break
+		case v2:=<- ch:
+			fmt.Printf("consumer-%v,data:%v\n",id, v2)
+		}
+	}
+}
+
+func TestProduce(t *testing.T) {
+	ch := make(chan int, 10)
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+
+	go producer(ch)
+	go consumer(1, ch, ch1)
+	go consumer(2, ch, ch2)
+
+	time.Sleep(10*time.Second)
+
+	ch1 <- 1
+	ch2 <- 2
+}

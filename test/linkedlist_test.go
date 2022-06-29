@@ -420,8 +420,11 @@ func reverseListSection(head *ListNode, m, n int) *ListNode {
 	if head == nil || head.Next == nil {
 		return nil
 	}
-	cur, pre := head, head
-	for i:=1; i<m-1; i++ {
+	//引入头节点，规避m=1时的边界问题
+	h := &ListNode{0,head}
+	cur, pre := h, h
+	//获取第m个节点和前置节点
+	for i:=1; i<=m-1; i++ {
 		pre = pre.Next
 	}
 	cur = pre.Next
@@ -434,7 +437,7 @@ func reverseListSection(head *ListNode, m, n int) *ListNode {
 		nxt.Next = pre.Next
 		pre.Next = nxt
 	}
-	return head
+	return h.Next
 }
 
 func TestReverseSection(t *testing.T) {
@@ -446,6 +449,6 @@ func TestReverseSection(t *testing.T) {
 	}
 	head.Show()
 	fmt.Println("---------------")
-	res := reverseListSection(head, 4, 8)
+	res := reverseListSection(head, 1, 5)
 	res.Show()
 }
