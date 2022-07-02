@@ -79,3 +79,52 @@ func TestQueen(t *testing.T) {
 //     }
     
 // }
+
+
+var output [][]int
+type List []int
+func (l *List) contains(x int)bool{
+	for _, v := range *l{
+		if v == x {
+			return true
+		}
+	}
+	return false
+}
+
+func (l *List) pop(){
+	length := len(*l)
+	*l = append((*l)[:length-1])
+}
+
+//回溯算法解决数组全排列
+func traceBackArr(nums []int, list List) {
+	if (cap(nums) == len(list)){
+        fmt.Printf("output before:list=%v\n", list)
+        //这里有个坑，因为是同一个tmp,所以后面的值会把前面的值给更新掉。
+		//因此要创建新的变量，复制一下再apppend进去
+        new:=[]int{}
+        new=append(new,list...)
+		output = append(output, new)
+        fmt.Printf("output after:output=%v\n", output)
+		return
+	}
+	for _, v := range nums{
+		if list.contains(v){
+			continue
+		}
+		list = append(list, v)
+        fmt.Printf("before:list=%v,v=%v\n", list, v)
+		traceBackArr(nums, list)
+        fmt.Printf("after:list=%v,v=%v\n", list, v)
+		list.pop()
+        fmt.Printf("pop:list=%v,v=%v\n", list, v)
+	}
+}
+	
+func TestBackArr(t *testing.T) {
+    input := []int{5, 4, 6, 2}
+	var l List
+    traceBackArr(input,l)
+	fmt.Println(output)
+}

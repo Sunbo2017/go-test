@@ -381,3 +381,49 @@ func TestMaxRepeat(t *testing.T) {
 	t.Log(maxRepeatSubstr(s3))
 	// t.Log(maxRepeatSubStr1(s3))
 }
+
+
+//查找两个字符串最长公共子串
+func LCS( str1 string ,  str2 string ) string {
+    // 二维数组存储所有的str1和str2相等字符的索引位置
+    var dp [][]int
+    for i:=0;i<len(str1);i++ {
+        for j:=0;j<len(str2);j++ {
+            if str1[i] == str2[j] {
+				//有连续相等的子串，则不用添加后续索引位置
+				if len(dp) > 0 {
+					temp := dp[len(dp)-1]
+					if i-temp[0] == j-temp[1] {
+						continue
+					}
+				}
+                in := []int{i,j}
+                dp = append(dp, in)
+            }
+        }
+    }
+    res := ""
+    for _,v := range dp {
+        i,j := v[0],v[1]
+        for i<len(str1) && j<len(str2) {
+            if str1[i] == str2[j] {
+                if i-v[0] >= len(res) {
+                    res = str1[v[0]:i+1]
+                }
+                i++
+                j++
+            } else{
+                break
+            }
+        }
+    }
+    return res
+}
+
+func TestLCS(t *testing.T) {
+	a := "abcgfhjkdsd"
+	b := "jfghthjkd"
+
+	res := LCS(a, b)
+	t.Log(res)
+}

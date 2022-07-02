@@ -239,3 +239,28 @@ func (n *NodeStack) IsEmpty() bool {
  func (n *NodeStack) Size() int {
 	return len(n.Items)
  }
+
+
+
+
+
+//两个栈实现队列
+var stack1 [] int
+var stack2 [] int
+
+func Push(node int) {
+    stack1 = append(stack1, node)
+}
+
+func Pop() int{
+    if len(stack2) == 0 {
+        for len(stack1) > 0 {
+            v := stack1[len(stack1)-1]
+            stack1 = stack1[:len(stack1)-1]
+            stack2 = append(stack2, v)
+        }
+    }
+    p := stack2[len(stack2)-1]
+    stack2 = stack2[:len(stack2)-1]
+    return p
+}
