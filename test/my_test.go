@@ -197,7 +197,7 @@ func Test2Sum(t *testing.T){
 }
 
 /**
-  * 
+  * 输入一个数组和一个目标值 T，判断数组中是否存在两个数的和为 T，返回两数下标
   * @param numbers int整型一维数组 
   * @param target int整型 
   * @return int整型一维数组
@@ -441,6 +441,7 @@ func findPrimeBySieve(n int) {
 }
 
 
+//字节一面
 //一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法
 //递归
 func jumpFloor1(N int) int {

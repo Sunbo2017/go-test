@@ -215,6 +215,7 @@ func TestConcurrenceSlice5(t *testing.T) {
 // 最简单的方案是排序后取出前k个数
 // 因为选择排序每次都能挑出最大值
 // 所以可以改造选择排序算法实现，外层循环只需循环k次，时间复杂度为O(k*n)
+// 可以参考快排思想实现
 func searchTopK(array []int, k int) []int {
 	for i := 0; i < k; i++ {
 		for j := i + 1; j < len(array); j++ {
@@ -238,7 +239,7 @@ func rmDuplicateArray(arr []int) {
 	for fast < len(arr) {
 		if arr[fast] != arr[slow] {
 			slow++
-			// 维护 arr[0..slow] ⽆重复,神来之笔,将重复元素替换为后边的非重复元素
+			// 维护 arr[0..slow] ⽆重复,神来之笔,将重复元素替换为后边的非重复元素，即重复元素后移
 			arr[slow] = arr[fast]
 		}
 		fast++
@@ -251,29 +252,6 @@ func TestRmDuplicates(t *testing.T) {
 	arr := []int{1,1,1,2,2,2,3,3,4,5,6,6,7}
 	rmDuplicateArray(arr)
 }
-
-// leetcode-55:给定一个非负整数数组，数组中每个元素代表你在该位置可以跳跃的最大距离，
-// 从数组第一个位置开始，判断能否到达最后一个位置
-// 应用贪心算法：每⼀步都做出⼀个局部最优的选择，最终的结果就是全局最优。
-func judgeJump2last(arr []int) bool {
-	n, far := len(arr), 0
-	for i:=0;i<n-1;i++ {
-		// 不断计算能跳到的最远距离
-		far = Max(far, i+arr[i])
-		// 可能碰到了 0，卡住跳不动了
-		if far <= i {
-			return false
-		}
-	}
-	return far > n-1
-}
-
-func TestJump(t *testing.T) {
-	arr := []int{3,2,1,0,4,5}
-	res := judgeJump2last(arr)
-	t.Log(res)
-}
-
 
 // leetcode-27:给定一个num数组和一个数字，在仅使用O(1)额外空间的情况下删除数组中该数字,返回删除后数组长度
 // 如：nums = [0,1,2,2,3,0,4,2], val = 2,删除后数组变为[0,1,3,0,4],返回5
@@ -303,6 +281,28 @@ func TestRemoveElements(t *testing.T) {
 	t.Log(count)
 }
 
+// leetcode-55:给定一个非负整数数组，数组中每个元素代表你在该位置可以跳跃的最大距离，
+// 从数组第一个位置开始，判断能否到达最后一个位置
+// 应用贪心算法：每⼀步都做出⼀个局部最优的选择，最终的结果就是全局最优。
+func judgeJump2last(arr []int) bool {
+	n, far := len(arr), 0
+	for i:=0;i<n-1;i++ {
+		// 不断计算能跳到的最远距离
+		far = Max(far, i+arr[i])
+		// 可能碰到了 0，卡住跳不动了
+		if far <= i {
+			return false
+		}
+	}
+	return far > n-1
+}
+
+func TestJump(t *testing.T) {
+	arr := []int{3,2,1,0,4,5}
+	res := judgeJump2last(arr)
+	t.Log(res)
+}
+
 
 // 给定⼀个不重复的排序数组和⼀个⽬标值，在数组中找到⽬标值，并返回其索引。
 // 如果⽬标值不存在于数组中，返回它将会被按顺序插⼊的位置。
@@ -317,6 +317,7 @@ func searchInsert(nums []int, target int) int {
 		if nums[mid] > target {
 			high = mid - 1
 		} else {
+			//遍历到了最后一位 或 mid后一位正好大于等于目标值
 			if (mid == len(nums)-1) || (nums[mid+1] >= target) {
 				return mid + 1
 			}
@@ -369,10 +370,10 @@ func superPow(a int, b []int) int {
 // ]
 // 给定 target = 7，返回 true。
 // 给定 target = 3，返回 false。 
-//暴力解法，双重循环，直接查找
-//采用分治法：
+// 暴力解法，双重循环，直接查找
+// 采用分治法，二分查找变种：
 // step 1：首先获取矩阵的两个边长，判断特殊情况。
-// step 2：首先以左下角为起点，若是它小于目标元素，则往右移动去找大的，若是他大于目标元素，则往上移动去找小的。
+// step 2：首先以左下角为起点，若它小于目标元素，则往右移动去找大的，若他大于目标元素，则往上移动去找小的。
 // step 3：若是移动到了矩阵边界也没找到，说明矩阵中不存在目标值。
 func find2Array(arr [][]int, target int) bool {
 	a := len(arr)
@@ -413,7 +414,8 @@ func findHighest(arr []int) int {
 	return high
 }
 
-//买卖股票最佳时机,只可以买入卖出一次
+// 买卖股票最佳时机,只可以买入卖出一次
+// 贪心：循环记录每次收益，结果取最大值
 func getMaxProfit1(prices []int) int {
 	min := 10000
 	max := 0
@@ -425,6 +427,7 @@ func getMaxProfit1(prices []int) int {
 }
 
 //买卖股票最佳时机，可以买入卖出多次
+//贪心：只要收益为正就累加收益
 func getMaxProfit2(prices []int) int {
 	sum := 0
 	for i:=1;i<len(prices);i++ {

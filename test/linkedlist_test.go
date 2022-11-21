@@ -137,11 +137,10 @@ func partion(start, end *ListNode) *ListNode {
 		}
 		q = q.Next //否则一直往下走
 	}
-	
+
 	p.Val, start.Val = start.Val, p.Val //定位
 	return p
 }
-
 
 // 取出单链表倒数第k个元素：使用快慢指针
 // 最简单粗暴方法遍历一遍链表，数据存到数组中，遍历结束后直接取数组倒数第k个值
@@ -186,7 +185,7 @@ func rmBackwardsK(node *ListNode, k int) *ListNode {
 }
 
 func TestRmBackKList(t *testing.T) {
-	head := &ListNode{0,nil}
+	head := &ListNode{0, nil}
 	node := head
 	for i := 1; i <= 10; i++ {
 		node.Next = &ListNode{i, nil}
@@ -197,7 +196,6 @@ func TestRmBackKList(t *testing.T) {
 	res := rmBackwardsK(head.Next, 4)
 	res.Show()
 }
-
 
 // 判断单链表是否有环：应用快慢指针
 func judgeListCycle(node *ListNode) bool {
@@ -234,8 +232,6 @@ func getCycleStart(node *ListNode) *ListNode {
 	return slow
 }
 
-
-
 // 翻转链表
 // 从链表的第二个结点开始，把遍历到的结点插入到头结点的后面，直到遍历结束。
 // 假如原链表为head->1->2->3->4->5->6->7，在遍历到2的时候，将2插入到头结点的后面，链表变为head->2->1->3->4->5->6->7，
@@ -252,8 +248,8 @@ func reverseLinkedlist(node *ListNode) {
 	node.Next.Next = nil
 	for cur != nil {
 		next := cur.Next //保存后续节点
-		cur.Next = node.Next 
-		node.Next = cur  //插入到头节点后边
+		cur.Next = node.Next
+		node.Next = cur //插入到头节点后边
 		cur = next
 	}
 }
@@ -279,7 +275,6 @@ func reverseLinkedlist1(head *ListNode) *ListNode {
 	return pre
 }
 
-
 // 移除有序链表重复元素：快慢指针
 func rmDuplicateList(head *ListNode) *ListNode {
 	if head == nil {
@@ -303,12 +298,12 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 	if head == nil {
 		return nil
 	}
-	a,b := head,head
+	a, b := head, head
 	for i := 0; i < k; i++ {
 		// 不⾜ k 个，不需要反转，base case
 		if b == nil {
 			return head
-		} 
+		}
 		b = b.Next
 	}
 	newHead := reverseB(a, b)
@@ -323,21 +318,21 @@ func reverseB(head *ListNode, b *ListNode) *ListNode {
 		return nil
 	}
 	cur := head
-    var pre *ListNode = nil
-    for cur != b {
+	var pre *ListNode = nil
+	for cur != b {
 		//直接翻转链表，next指向前置节点
-        // pre, cur, cur.Next = cur, cur.Next, pre //这句话最重要
+		// pre, cur, cur.Next = cur, cur.Next, pre //这句话最重要
 
 		nxt := cur.Next
 		cur.Next = pre
 		pre = cur
 		cur = nxt
-    }
-    return pre
+	}
+	return pre
 }
 
 func TestReverseList(t *testing.T) {
-	head := &ListNode{0,nil}
+	head := &ListNode{0, nil}
 	node := head
 	for i := 0; i < 10; i++ {
 		node.Next = &ListNode{2 * i, nil}
@@ -350,7 +345,7 @@ func TestReverseList(t *testing.T) {
 }
 
 func TestReverseK(t *testing.T) {
-	head := &ListNode{0,nil}
+	head := &ListNode{0, nil}
 	node := head
 	for i := 0; i < 10; i++ {
 		node.Next = &ListNode{2 * i, nil}
@@ -362,11 +357,11 @@ func TestReverseK(t *testing.T) {
 	res.Show()
 }
 
-
 //判断链表是否是回文链表
 //如果可以使用额外存储结构的话，可以遍历链表把每个节点的元素都存入一个数组，然后判断数组是否是回文数组就可以
 //如果不使用额外数组空间，可以使用链表的后续遍历，模仿双指针操作来判断，代码如下
 var left *ListNode
+
 func judgeListBack(head *ListNode) bool {
 	left = head
 	return traverse(head)
@@ -379,12 +374,11 @@ func traverse(right *ListNode) bool {
 	}
 
 	res := traverse(right.Next)
-    //后序遍历代码:后续遍历可以视为栈操作，会最先取到最后节点的值
+	//后序遍历代码:后续遍历可以视为栈操作，会最先取到最后节点的值
 	res = res && (left.Val == right.Val)
 	left = left.Next
 	return res
 }
-
 
 //使用快慢指针技巧可以在完全不使用额外空间的情况下实现判断，
 //快慢指针找到链表中点，然后反转后半段链表和原链表进行比较，代码如下：
@@ -421,10 +415,10 @@ func reverseListSection(head *ListNode, m, n int) *ListNode {
 		return nil
 	}
 	//引入头节点，规避m=1时的边界问题
-	h := &ListNode{0,head}
+	h := &ListNode{0, head}
 	cur, pre := h, h
 	//获取第m个节点和前置节点
-	for i:=1; i<=m-1; i++ {
+	for i := 1; i <= m-1; i++ {
 		pre = pre.Next
 	}
 	cur = pre.Next
@@ -441,7 +435,7 @@ func reverseListSection(head *ListNode, m, n int) *ListNode {
 }
 
 func TestReverseSection(t *testing.T) {
-	head := &ListNode{0,nil}
+	head := &ListNode{0, nil}
 	node := head
 	for i := 1; i < 10; i++ {
 		node.Next = &ListNode{2 * i, nil}
@@ -451,4 +445,27 @@ func TestReverseSection(t *testing.T) {
 	fmt.Println("---------------")
 	res := reverseListSection(head, 1, 5)
 	res.Show()
+}
+
+//输入两个无环的单向链表，找出它们的第一个公共结点，如果没有公共节点则返回空。
+//双指针：让N1和N2一起遍历，当N1先走完链表1的尽头（为null）的时候，则从链表2的头节点继续遍历；
+//同样，如果N2先走完了链表2的尽头，则从链表1的头节点继续遍历，也就是说，N1和N2都会遍历链表1和链表2。
+//因为两个指针，同样的速度，走完同样长度（链表1+链表2），不管两条链表有无相同节点，都能够同时到达终点。
+//如果有公共节点，n1和n2会同时走到公共节点处
+func FindFirstCommonNode(p1, p2 *ListNode) *ListNode {
+	l1, l2 := p1, p2
+	for l1 != l2 {
+		if l1 == nil {
+			l1 = p2
+		} else {
+			l1 = l1.Next
+		}
+
+		if l2 == nil {
+			l2 = p1
+		} else {
+			l2 = l2.Next
+		}
+	}
+	return l1
 }
