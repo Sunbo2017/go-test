@@ -469,3 +469,44 @@ func FindFirstCommonNode(p1, p2 *ListNode) *ListNode {
 	}
 	return l1
 }
+
+//链表奇偶重排
+//input:1->4->6->5->8->7->nil
+//output:1->6->8->4->5->7->nil
+//step 1：判断空链表的情况，如果链表为空，不用重排。
+//step 2：使用双指针odd和even分别遍历奇数节点和偶数节点，并给偶数节点链表一个头。
+//step 3：上述过程，每次遍历两个节点，且even在后面，因此每轮循环用even检查后两个元素是否为NULL，如果不为再进入循环进行上述连接过程。
+//step 4：将偶数节点头接在奇数最后一个节点后，再返回头部
+func oddEvenList(node *ListNode) *ListNode {
+	if node == nil || node.Next == nil {
+		return node
+	}
+	//提取第二个节点
+	even := node.Next
+	//记录第一个节点
+	odd := node
+	//为偶数节点设置头节点
+	evenHead := even
+	for even != nil && even.Next != nil {
+		odd.Next = even.Next
+		odd = odd.Next
+
+		even.Next = odd.Next
+		even = even.Next
+	}
+	odd.Next = evenHead
+	return node
+}
+
+func TestOddEvenList(t *testing.T) {
+	head := &ListNode{0, nil}
+	node := head
+	for i := 1; i < 10; i++ {
+		node.Next = &ListNode{2 * i, nil}
+		node = node.Next
+	}
+	head.Show()
+	fmt.Println("---------------")
+	res := oddEvenList(head)
+	res.Show()
+}

@@ -75,7 +75,6 @@ func addRightNode(value int, node *treeNode) {
 	node.right = &treeNode{value: fmt.Sprintf("right-%d", value)}
 }
 
-
 func addLeft(value int, node *TreeNode) {
 	node.Left = &TreeNode{Val: value}
 }
@@ -139,49 +138,49 @@ func dfsHelper(node *treeNode, level int) {
 
 //bfs实现层序遍历
 func levelOrder(root *TreeNode) [][]int {
-    // write code here
-    res := [][]int{}
-    if root == nil {
-        return res
-    }
-    queue := []*TreeNode{root}
-    for len(queue) > 0 {
-        level := []int{}
-        l := len(queue)
+	// write code here
+	res := [][]int{}
+	if root == nil {
+		return res
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		level := []int{}
+		l := len(queue)
 		//此处遍历每一层
-        for i:=l;i>0;i-- {
-            node := queue[0]
-            level = append(level, node.Val)
-            if node.Left != nil {
-                queue = append(queue, node.Left)
-            }
-            if node.Right != nil {
-                queue = append(queue, node.Right)
-            }
-            queue = queue[1:]
-        }
-        res = append(res, level)
-    }
-    return res
+		for i := l; i > 0; i-- {
+			node := queue[0]
+			level = append(level, node.Val)
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+			queue = queue[1:]
+		}
+		res = append(res, level)
+	}
+	return res
 }
 
 //之字形层序遍历二叉树：第一层从左向右，下一层从右向左，一直这样交替
 func levelOrder之(root *TreeNode) [][]int {
-    // write code here
-    res := [][]int{}
-    if root == nil {
-        return res
-    }
-    queue := []*TreeNode{root}
+	// write code here
+	res := [][]int{}
+	if root == nil {
+		return res
+	}
+	queue := []*TreeNode{root}
 	f := 0
-    for len(queue) > 0 {
+	for len(queue) > 0 {
 		f++
-        level := []int{}
-        l := len(queue)
+		level := []int{}
+		l := len(queue)
 		//此处遍历每一层
-        for i:=l;i>0;i-- {
-            node := queue[0]
-            level = append(level, node.Val)
+		for i := l; i > 0; i-- {
+			node := queue[0]
+			level = append(level, node.Val)
 
 			if node.Left != nil {
 				queue = append(queue, node.Left)
@@ -189,18 +188,18 @@ func levelOrder之(root *TreeNode) [][]int {
 			if node.Right != nil {
 				queue = append(queue, node.Right)
 			}
-			
-            queue = queue[1:]
-        }
+
+			queue = queue[1:]
+		}
 		if f%2 == 0 {
 			//将level逆序
 			for i, j := 0, len(level)-1; i < j; i, j = i+1, j-1 {
 				level[i], level[j] = level[j], level[i]
 			}
 		}
-        res = append(res, level)
-    }
-    return res
+		res = append(res, level)
+	}
+	return res
 }
 
 func TestLevelOrder(t *testing.T) {
@@ -393,7 +392,7 @@ func judgeSearchTree1(root *treeNode, maxVal, minVal string) bool {
 	return true
 }
 
-func TestJudgeSerchTree(t *testing.T) {
+func TestJudgeSearchTree(t *testing.T) {
 	node := createTree()
 	judgeSearchTree(node)
 	//判断array是否是正序即可，
@@ -417,7 +416,7 @@ func judgeExistInTree(tree *treeNode, target string) bool {
 	}
 }
 
-func TestJudgeSerchTree1(t *testing.T) {
+func TestJudgeSearchTree1(t *testing.T) {
 	node := createTree()
 	//因为我的treeNode结构value为string，暂写为如下形式
 	result := judgeSearchTree1(node, "100", "0")

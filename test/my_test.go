@@ -3,9 +3,9 @@ package test
 import (
 	"fmt"
 	"sort"
+	"sync"
 	"testing"
 	"time"
-	"sync"
 )
 
 // map append问题
@@ -64,9 +64,9 @@ func TestStepsWater(t *testing.T) {
 }
 
 type step struct {
-	val int  //当前台阶高度
-	leftMax int  //左侧最高台阶高度
-	rightMax int  //右侧最高台阶高度
+	val      int //当前台阶高度
+	leftMax  int //左侧最高台阶高度
+	rightMax int //右侧最高台阶高度
 }
 
 func makeSteps(steps []int) []step {
@@ -75,19 +75,19 @@ func makeSteps(steps []int) []step {
 		s := step{val: v}
 		list[i] = s
 	}
-	for i:=1; i<len(steps)-1; i++ {
+	for i := 1; i < len(steps)-1; i++ {
 		list[i].leftMax = Max(list[i-1].leftMax, list[i-1].val)
 	}
-	for i:=len(steps)-2; i>0; i-- {
+	for i := len(steps) - 2; i > 0; i-- {
 		list[i].rightMax = Max(list[i+1].rightMax, list[i+1].val)
 	}
 	return list
 }
 
-func countStapWater (steps []int) int {
+func countStepWater(steps []int) int {
 	water := 0
 	stepList := makeSteps(steps)
-	for i:=1; i<len(steps)-1; i++ {
+	for i := 1; i < len(steps)-1; i++ {
 		left := stepList[i].leftMax - stepList[i].val
 		right := stepList[i].rightMax - stepList[i].val
 		if left > 0 && right > 0 {
@@ -100,10 +100,9 @@ func countStapWater (steps []int) int {
 
 func TestStepWater1(t *testing.T) {
 	steps := []int{0, 0, 2, 1, 2, 3, 0, 1, 3, 2}
-	water := countStapWater(steps)
+	water := countStepWater(steps)
 	t.Logf("water:%v", water)
 }
-
 
 func TestSort(t *testing.T) {
 	ints := []int{0, 5, 2, 1, 3, 4, 6, 9, 8, 7}
@@ -162,22 +161,22 @@ func TestCombinations(t *testing.T) {
 // 已知每一个字母可以用 1~26 表示，给定一个数字组成的字符串，问它可以表示多少种字母组合。
 // 123456215
 func numString(str string, lStr []string) int {
-	for i:=0; i<len(str); {
+	for i := 0; i < len(str); {
 
 	}
-	
+
 	return 0
 }
 
 // 输入一个数组和一个目标值 T，判断数组中是否存在两个数的和为 T
 // 最简单方法可以直接双层循环判断和，O(n^2)
 // 可以使用map的k，v分别记录元素值和差值，O（n）
-func judege2Sum(arr []int, t int) (v1,v2 int){
+func judge2Sum(arr []int, t int) (v1, v2 int) {
 	resMap := map[int]int{}
-	for _, v := range arr{
-		if _, ok := resMap[v]; !ok{
-			resMap[t - v] = v
-		} else{
+	for _, v := range arr {
+		if _, ok := resMap[v]; !ok {
+			resMap[t-v] = v
+		} else {
 			return v, resMap[v]
 		}
 	}
@@ -186,59 +185,58 @@ func judege2Sum(arr []int, t int) (v1,v2 int){
 
 // 升级：输入一个数组和一个目标值 T，判断数组中是否存在某些数的和为 T。
 
-
-
-func Test2Sum(t *testing.T){
-	array := []int{1,2,3,4,6,5,8,9}
+func Test2Sum(t *testing.T) {
+	array := []int{1, 2, 3, 4, 6, 5, 8, 9}
 	// 6, 4
-	v1, v2 := judege2Sum(array, 10)
+	v1, v2 := judge2Sum(array, 10)
 	fmt.Println(v1)
 	fmt.Println(v2)
 }
 
 /**
-  * 输入一个数组和一个目标值 T，判断数组中是否存在两个数的和为 T，返回两数下标
-  * @param numbers int整型一维数组 
-  * @param target int整型 
-  * @return int整型一维数组
-*/
-func twoSumIndex( numbers []int ,  target int ) []int {
-    // write code here
-    nmap := make(map[int]int,0)
-    for i, v := range numbers {
-        if val, ok := nmap[target-v]; ok {
-            return []int{val+1, i+1}
-        }else {
-            nmap[v] = i
-        }
-    }
-    return []int{}
+ * 输入一个数组和一个目标值 T，判断数组中是否存在两个数的和为 T，返回两数下标
+ * @param numbers int整型一维数组
+ * @param target int整型
+ * @return int整型一维数组
+ */
+func twoSumIndex(numbers []int, target int) []int {
+	// key:数组元素,val:元素下标
+	nmap := make(map[int]int, 0)
+	for i, v := range numbers {
+		if val, ok := nmap[target-v]; ok {
+			return []int{val + 1, i + 1}
+		} else {
+			nmap[v] = i
+		}
+	}
+	return []int{}
 }
 
 func TestTwoSumIndex(t *testing.T) {
-	nums := []int{3,2,4}
+	nums := []int{3, 2, 4}
 	target := 6
 	res := twoSumIndex(nums, target)
 	t.Log(res)
 }
 
-// 一个细胞的寿命是5min 他会在2min和4min 分别分裂出一个新细胞，请问n min后 ，有多少细胞 
+// 一个细胞的寿命是5min 他会在2min和4min 分别分裂出一个新细胞，请问n min后 ，有多少细胞
 var sumn = 1
-func sum(n int) int{
-    for i:=1;i<=n;i++{
-        if i%2 == 0 || i%4==0 {
-            // sumn += sum(n-i)
+
+func sum(n int) int {
+	for i := 1; i <= n; i++ {
+		if i%2 == 0 || i%4 == 0 {
+			// sumn += sum(n-i)
 			sumn *= 2
-        }
-        if i%5==0 {
-			div := i/5
-            sumn = sumn - 2*div
-        }
-    }
-    return sumn
+		}
+		if i%5 == 0 {
+			div := i / 5
+			sumn = sumn - 2*div
+		}
+	}
+	return sumn
 }
 
-func TestSum(t *testing.T){
+func TestSum(t *testing.T) {
 	n := 15
 	fmt.Println(sum(n))
 }
@@ -252,10 +250,10 @@ func TestSum(t *testing.T){
 // 如果 a>sqrt(i)，b>sqrt(i)，于是 a×b > sqrt(i)*sqrt(i) = i，因此就都不能整除i了。
 // 如果i不是质数，它的因子最大就是 sqrt(i)；换言之，用 2→ sqrt(i)去检验就行了
 func judgePrime(n int) bool {
-	if n==1 || n==0 {
+	if n == 1 || n == 0 {
 		return false
 	}
-	for i:=2;i*i<=n;i++ {
+	for i := 2; i*i <= n; i++ {
 		if n%i == 0 {
 			return false
 		}
@@ -270,19 +268,19 @@ func findPrimeAll(n int) {
 	numChan := make(chan int, n)
 	resChan := make(chan string)
 	exitChan := make(chan int, 10)
-	for i:=2;i<=n;i++ {
+	for i := 2; i <= n; i++ {
 		numChan <- i
 	}
 	close(numChan)
 
-	for i:=0;i<10;i++ {
-		go findPrime(numChan, exitChan,resChan, i)
+	for i := 0; i < 10; i++ {
+		go findPrime(numChan, exitChan, resChan, i)
 	}
 
 	// 等待结束信号
-	go func () {
+	go func() {
 		count := 0
-		for v:= range exitChan {
+		for v := range exitChan {
 			count++
 			fmt.Printf("channel:%v is finish,count=%v;", v, count)
 			if count == 10 {
@@ -298,18 +296,18 @@ func findPrimeAll(n int) {
 	// 	total++
 	// }
 	for {
-		_, ok := <- resChan
+		_, ok := <-resChan
 		if !ok {
 			break
 		} else {
 			total++
 		}
 	}
-	
+
 	fmt.Printf("total:%v \n", total)
 }
 
-func findPrime(in,exit chan int, out chan string, num int) {
+func findPrime(in, exit chan int, out chan string, num int) {
 	// fmt.Printf("channel id:%v /n", num)
 	for v := range in {
 		if res := judgePrime(v); res {
@@ -325,8 +323,8 @@ func TestFindPrime(t *testing.T) {
 	// findPrimeAll(100000000)
 
 	// _CalcPrimes()
-    // fmt.Println(_Primes)
-    // fmt.Println(100000000, "以内的素数个数为", _N)
+	// fmt.Println(_Primes)
+	// fmt.Println(100000000, "以内的素数个数为", _N)
 
 	findPrimeBySieve(100000000)
 	fmt.Println("finish...")
@@ -336,66 +334,63 @@ func TestFindPrime(t *testing.T) {
 	t.Logf("cost:%v", cost)
 }
 
-
 var _Primes []uint64 = []uint64{
-    2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
-    31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
-    73, 79, 83, 89, 97,
+	2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+	31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
+	73, 79, 83, 89, 97,
 }
 
 var _N int
 
 // 设n>1为整数，m为整数，且n≤m<n^2，如果小于n的所有素数都不是m的因子，则m为素数。
 func _CalcPrimes() {
-    N := len(_Primes)
-    i := 0
+	N := len(_Primes)
+	i := 0
 
-    for n := uint64(101); n < 10000; n += 2 {
-        for i = 1; i < N; i++ { // i从1开始，因为2必然不整除n
-            if n%_Primes[i] == 0 {
-                break
-            }
-        }
-        if i == N {
-            _Primes = append(_Primes, n)
-        }
-    }
+	for n := uint64(101); n < 10000; n += 2 {
+		for i = 1; i < N; i++ { // i从1开始，因为2必然不整除n
+			if n%_Primes[i] == 0 {
+				break
+			}
+		}
+		if i == N {
+			_Primes = append(_Primes, n)
+		}
+	}
 
-    N = len(_Primes)
+	N = len(_Primes)
 
-    for n := uint64(10001); n < 100000000; n += 2 {
-        for i = 1; i < N; i++ {
-            if n%_Primes[i] == 0 {
-                break
-            }
-        }
-        if i == N {
-            _Primes = append(_Primes, n)
-        }
-    }
+	for n := uint64(10001); n < 100000000; n += 2 {
+		for i = 1; i < N; i++ {
+			if n%_Primes[i] == 0 {
+				break
+			}
+		}
+		if i == N {
+			_Primes = append(_Primes, n)
+		}
+	}
 
-    N = len(_Primes)
-    _N = N
+	N = len(_Primes)
+	_N = N
 }
-
 
 // 生成n个数的channel
 func generate(ch chan int, n int) {
-    for i := 2; i<=n; i++ {
-        ch <- i // Send 'i' to channel 'ch'.
-    }
+	for i := 2; i <= n; i++ {
+		ch <- i // Send 'i' to channel 'ch'.
+	}
 }
-
 
 // Copy the values from channel 'in' to channel 'out',
 // removing those divisible by 'prime'.
 func filter(in, out chan int, prime int) {
-    for {
-        i := <-in // Receive value of new variable 'i' from 'in'.
-        if i%prime != 0 {
-            out <- i // Send 'i' to channel 'out'.
-        }
-    }
+	for {
+		i := <-in // Receive value of new variable 'i' from 'in'.
+		if i%prime != 0 {
+			out <- i // Send 'i' to channel 'out'.
+		}
+	}
 }
 
 // 求素数：用小于n的所有素数去除n,如果都不能整除，则n为素数
@@ -403,53 +398,52 @@ func filter(in, out chan int, prime int) {
 // The prime sieve: Daisy-chain filter processes together.
 // 网上都是这套代码，实际效率贼差，不可取
 func findPrimeBySieve1(n int) {
-    ch := make(chan int) // Create a new channel.
-    go generate(ch, n)      // Start generate() as a goroutine.
-    for {
-        prime := <-ch
-        // fmt.Printf("prime:%v,", prime)
-        ch1 := make(chan int)
-        go filter(ch, ch1, prime)
-        ch = ch1
-    }
+	ch := make(chan int) // Create a new channel.
+	go generate(ch, n)   // Start generate() as a goroutine.
+	for {
+		prime := <-ch
+		// fmt.Printf("prime:%v,", prime)
+		ch1 := make(chan int)
+		go filter(ch, ch1, prime)
+		ch = ch1
+	}
 }
 
 // 筛法求素数：依次去掉已知素数的所有倍数
 // 筛法确实强，单协程执行完只需1秒多时间
 func findPrimeBySieve(n int) {
 	isPrime := make([]bool, n)
-	for i:=0;i<n;i++ {
+	for i := 0; i < n; i++ {
 		isPrime[i] = true
 	}
-	for i := 2; i * i < n; i++ {
+	for i := 2; i*i < n; i++ {
 		if isPrime[i] {
 			for j := i * i; j < n; j += i {
-				isPrime[j] = false;
+				isPrime[j] = false
 			}
 		}
 	}
-	
-	count := 0;
+
+	count := 0
 	for i := 2; i < n; i++ {
 		if isPrime[i] {
 			// fmt.Printf("%v,", i)
 			count++
-		} 
+		}
 	}
-	
+
 	fmt.Println("total:", count)
 }
-
 
 //字节一面
 //一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法
 //递归
 func jumpFloor1(N int) int {
 	if N <= 0 {
-	  return 0
+		return 0
 	}
 	if N == 1 || N == 2 {
-	  return N
+		return N
 	}
 	return jumpFloor1(N-1) + jumpFloor1(N-2)
 }
@@ -457,14 +451,14 @@ func jumpFloor1(N int) int {
 //动态规划
 func jumpFloor2(N int) int {
 	if N <= 0 {
-	  return 0
+		return 0
 	}
 	if N == 1 || N == 2 {
-	  return N
+		return N
 	}
 	a, b := 1, 2
 	for i := 3; i <= N; i++ {
-	  a, b = b, a+b
+		a, b = b, a+b
 	}
 	return b
 }
@@ -495,18 +489,18 @@ func jumpFloor3(n int) int {
 //金山云面试题：两个协程交替打印奇数偶数，必须保证按序输出
 func TestNum(t *testing.T) {
 	fmt.Println("Hello, World!")
-	a,b := make(chan int),make(chan int)
-	go printNum2(a,b)
-	go printNum1(a,b)
+	a, b := make(chan int), make(chan int)
+	go printNum2(a, b)
+	go printNum1(a, b)
 	//先起协程，后向channel发数据，否则死锁
 	b <- 1
-	time.Sleep(2*time.Second)
+	time.Sleep(2 * time.Second)
 }
 
-func printNum1(intChan1,intChan2 chan int) {
+func printNum1(intChan1, intChan2 chan int) {
 	//注意此处i必须为偶数，否则不会打印，也不会向channel发送信号
-	for i:=2;i<=100;i+=2 {
-		if _,ok := <-intChan1; ok {
+	for i := 2; i <= 100; i += 2 {
+		if _, ok := <-intChan1; ok {
 			if i%2 == 0 {
 				fmt.Printf("chan2:%v\n", i)
 				intChan2 <- i
@@ -515,10 +509,10 @@ func printNum1(intChan1,intChan2 chan int) {
 	}
 }
 
-func printNum2(intChan1,intChan2 chan int) {
+func printNum2(intChan1, intChan2 chan int) {
 	//注意此处i必须为奇数，否则不会打印，也不会向channel发送信号
-	for i:=1;i<=100;i+=2 {
-		if _,ok := <-intChan2; ok {
+	for i := 1; i <= 100; i += 2 {
+		if _, ok := <-intChan2; ok {
 			if i%2 != 0 {
 				fmt.Printf("chan1:%v\n", i)
 				intChan1 <- i
@@ -528,7 +522,7 @@ func printNum2(intChan1,intChan2 chan int) {
 }
 
 //血的教训，可以默写下来才叫掌握了算法思想
-func reverseListNode (head *ListNode) *ListNode {
+func reverseListNode(head *ListNode) *ListNode {
 	if head == nil {
 		return nil
 	}
@@ -545,21 +539,20 @@ func reverseListNode (head *ListNode) *ListNode {
 	return pre
 }
 
-
 //金山云二面：3个协程交替打印1，2，3，按序输出
 var wwg sync.WaitGroup
 
 func TestPrint3(t *testing.T) {
 	fmt.Println("Hello, World!")
-	
-	chan1,chan2,chan3 := make(chan int),make(chan int),make(chan int)
+
+	chan1, chan2, chan3 := make(chan int), make(chan int), make(chan int)
 	//wg := sync.WaitGroup()
 	wwg.Add(6)
 	go printNum11(chan1, chan2)
 	go printNum12(chan2, chan3)
 	go printNum13(chan3, chan1)
 	chan1 <- 1
-	
+
 	wwg.Wait()
 	close(chan1)
 	close(chan2)
@@ -567,39 +560,39 @@ func TestPrint3(t *testing.T) {
 	fmt.Println("FINISH")
 }
 
-func printNum11(chan1,chan2 chan int) {
-	for i:=0;i<2;i++ {
-		if _, ok := <- chan1; ok {
-		fmt.Println(1)
-		wwg.Done()
-		chan2 <- 1
+func printNum11(chan1, chan2 chan int) {
+	for i := 0; i < 2; i++ {
+		if _, ok := <-chan1; ok {
+			fmt.Println(1)
+			wwg.Done()
+			chan2 <- 1
 		}
 	}
 }
 
-func printNum12(chan1,chan2 chan int) {
-	for i:=0;i<2;i++ {
-		if _, ok := <- chan1; ok {
-		fmt.Println(2)
-		wwg.Done()
-		chan2 <- 1
+func printNum12(chan1, chan2 chan int) {
+	for i := 0; i < 2; i++ {
+		if _, ok := <-chan1; ok {
+			fmt.Println(2)
+			wwg.Done()
+			chan2 <- 1
 		}
 	}
 }
 
-func printNum13(chan1,chan2 chan int) {
-	for i:=0;i<2;i++ {
-		if _, ok := <- chan1; ok {
-		fmt.Println(3)
-		
-		// if i == 1 {
-		// 	wg.Done()
-		// 	break
-		// }
-		fmt.Println("F---")
-		//必须先done，确保其它协程结束后不会再向另一个协程发出信号
-		wwg.Done()
-		chan2 <- 1
+func printNum13(chan1, chan2 chan int) {
+	for i := 0; i < 2; i++ {
+		if _, ok := <-chan1; ok {
+			fmt.Println(3)
+
+			// if i == 1 {
+			// 	wg.Done()
+			// 	break
+			// }
+			fmt.Println("F---")
+			//必须先done，确保其它协程结束后不会再向另一个协程发出信号
+			wwg.Done()
+			chan2 <- 1
 		}
 	}
 }
@@ -665,23 +658,22 @@ func TestValidSudoku(t *testing.T) {
 	fmt.Println(sudoku)
 }
 
-
 func producer(ch chan int) {
-	for i:=0;i<10;i++ {
+	for i := 0; i < 10; i++ {
 		ch <- i
 		fmt.Printf("produce:%v\n", i)
-		time.Sleep(2*time.Second)
+		time.Sleep(2 * time.Second)
 	}
 }
 
 func consumer(id int, ch chan int, ch1 chan int) {
 	for {
 		select {
-		case v1:=<- ch1:
+		case v1 := <-ch1:
 			fmt.Printf("stop:%v\n", v1)
 			break
-		case v2:=<- ch:
-			fmt.Printf("consumer-%v,data:%v\n",id, v2)
+		case v2 := <-ch:
+			fmt.Printf("consumer-%v,data:%v\n", id, v2)
 		}
 	}
 }
@@ -695,7 +687,7 @@ func TestProduce(t *testing.T) {
 	go consumer(1, ch, ch1)
 	go consumer(2, ch, ch2)
 
-	time.Sleep(10*time.Second)
+	time.Sleep(10 * time.Second)
 
 	ch1 <- 1
 	ch2 <- 2
