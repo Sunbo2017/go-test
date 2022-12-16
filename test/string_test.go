@@ -55,7 +55,7 @@ func longestSubstring1(s string) int {
 	if len(s) == 0 {
 		return 0
 	}
-	// 
+	//
 	bitSet := make(map[byte]int, 256)
 	// 结果，窗口起点和终点
 	result, left, right := 0, 0, 0
@@ -81,7 +81,8 @@ func longestSubstring1(s string) int {
 func TestLongestSubstring(t *testing.T) {
 	// s := "pwwkew"
 	// s := "abrfccbde"
-	s := "aaaccbde"
+	//s := "aaaccbde"
+	s := "abcdeeabde"
 	l1 := longestSubstring(s)
 	fmt.Println(l1)
 	fmt.Println("---------")
@@ -133,8 +134,8 @@ func strStr1(s1, s2 string) int {
 		return 0
 	}
 
-	for i := 0; i < len1-len2+1; i++{
-		if s1[i:i+len2] == s2{
+	for i := 0; i < len1-len2+1; i++ {
+		if s1[i:i+len2] == s2 {
 			return i
 		}
 	}
@@ -161,36 +162,36 @@ func TestCompare(t *testing.T) {
 //查找最长回文子串：从中间字符开始依次比较前后字符，若相等即为回文子串，不等则继续寻找
 //中间位置可能是某个字符，如aba；也可能是空白，如aa
 func longestPalindrome(s string) string {
-    var sub, longest string
-    var mid int 
-    
-    for mid < len(s) {
-        // 对称点为空白，长度为偶数
-        sub = findLongestPalindromeByMid(s, mid-1, mid)
-        if len(sub) > len(longest) {
-            longest = sub
-        }
-        
-        // 对称点为某个字符，长度为奇数
-        sub = findLongestPalindromeByMid(s, mid-1, mid+1)
-        if len(sub) > len(longest) {
-            longest = sub
-        }
-        mid++
-    }
-    return longest
+	var sub, longest string
+	var mid int
+
+	for mid < len(s) {
+		// 对称点为空白，长度为偶数
+		sub = findLongestPalindromeByMid(s, mid-1, mid)
+		if len(sub) > len(longest) {
+			longest = sub
+		}
+
+		// 对称点为某个字符，长度为奇数
+		sub = findLongestPalindromeByMid(s, mid-1, mid+1)
+		if len(sub) > len(longest) {
+			longest = sub
+		}
+		mid++
+	}
+	return longest
 }
 
 func findLongestPalindromeByMid(s string, left, right int) string {
-    for left >= 0 && right < len(s) {
-        if s[left] != s[right] {
-            break
-        }
-        left--
-        right++
-    }
-    //注意此处,left索引位置不相等后退出循环，所以相等的位置是left+1和right-1，即[left+1,right),左闭右开
-    return s[left+1:right]
+	for left >= 0 && right < len(s) {
+		if s[left] != s[right] {
+			break
+		}
+		left--
+		right++
+	}
+	//注意此处,left索引位置不相等后退出循环，所以相等的位置是left+1和right-1，即[left+1,right),左闭右开
+	return s[left+1 : right]
 }
 
 func TestLongest(t *testing.T) {
@@ -198,7 +199,6 @@ func TestLongest(t *testing.T) {
 	subS := longestPalindrome(str)
 	t.Log(subS)
 }
-
 
 //金山云面试题：字符串加法：需使用纯字符串，不可转为int类型
 func AddStrNumber(a, b string) string {
@@ -210,35 +210,35 @@ func AddStrNumber(a, b string) string {
 	}
 	//存储逆序的结果
 	var res []string
-	num1,num2 := make([]byte, max),make([]byte, max)
-	
-	c1,c2 := 0, 0
-	for i:=l1-1;i>=0;i-- {
+	num1, num2 := make([]byte, max), make([]byte, max)
+
+	c1, c2 := 0, 0
+	for i := l1 - 1; i >= 0; i-- {
 		//逆序存储字符串a每个字符，若a长度小于max，默认0补齐
 		// num1 = append(num1, a[i]-'0')
-		num1[c1] = a[i]-'0'
+		num1[c1] = a[i] - '0'
 		c1++
 	}
-	for i:=l2-1;i>=0;i-- {
+	for i := l2 - 1; i >= 0; i-- {
 		//逆序存储字符串b每个字符，若b长度小于max，默认0补齐
 		// num2 = append(num2, b[i]-'0')
-		num2[c2] = b[i]-'0'
+		num2[c2] = b[i] - '0'
 		c2++
 	}
 	//保存进位值
 	var up byte = 0
-	for i:=0;i<max;i++ {
+	for i := 0; i < max; i++ {
 		//注意先计算和，再更新进位值
-		sum := (up+num1[i]+num2[i])%10
-		up = (up+num1[i]+num2[i])/10
+		sum := (up + num1[i] + num2[i]) % 10
+		up = (up + num1[i] + num2[i]) / 10
 		res = append(res, string(sum+'0'))
 	}
 	result := ""
-	c := len(res)-1
+	c := len(res) - 1
 	//逆序拼接数组元素获得正序的和
-	for i:=len(res)-1;i>=0;i-- {
+	for i := len(res) - 1; i >= 0; i-- {
 		//去除开头的0
-		if c == i && res[i]=="0" {
+		if c == i && res[i] == "0" {
 			c--
 			continue
 		}
@@ -248,13 +248,13 @@ func AddStrNumber(a, b string) string {
 }
 
 func TestAddStrNumber(t *testing.T) {
-	a,b := '2'-'0','3'-'0'
+	a, b := '2'-'0', '3'-'0'
 	t.Log('0')
 	t.Log(a)
 	t.Log(b)
-	t.Log(a+b)
+	t.Log(a + b)
 
-	str1, str2 := "001234587669003", "00034579"// res=1234587703582
+	str1, str2 := "001234587669003", "00034579" // res=1234587703582
 	res := AddStrNumber(str1, str2)
 	t.Log(res)
 }
@@ -263,25 +263,25 @@ func TestAddStrNumber(t *testing.T) {
 func MultiStrNumber(a, b string) string {
 	l1, l2 := len(a), len(b)
 
-	var res [][]byte 
+	var res [][]byte
 	//进位值
 	up := byte(0)
-	for i:= l1-1;i>=0;i-- {
-		n1 := a[i]-'0'
+	for i := l1 - 1; i >= 0; i-- {
+		n1 := a[i] - '0'
 		//逆序存储每一位
 		r := []byte{}
-		for j:=l2-1;j>=0;j-- {
-			n2 := b[j]-'0'
-			sum := (n1*n2+up)
-			cur := sum%10
-			up = sum/10
+		for j := l2 - 1; j >= 0; j-- {
+			n2 := b[j] - '0'
+			sum := (n1*n2 + up)
+			cur := sum % 10
+			up = sum / 10
 			r = append(r, cur)
 		}
-		if up >0 {
+		if up > 0 {
 			r = append(r, up)
 		}
 		reverse := reverseArray(r)
-		c := l1-1-i
+		c := l1 - 1 - i
 		//从第二轮乘积开始在末位补0
 		if c >= 0 {
 			add := make([]byte, c)
@@ -290,7 +290,7 @@ func MultiStrNumber(a, b string) string {
 		res = append(res, reverse)
 	}
 	temp := byteArray2str(res[0])
-	for i:=1;i<len(res);i++ {
+	for i := 1; i < len(res); i++ {
 		cur := byteArray2str(res[i])
 		temp = AddStrNumber(cur, temp)
 	}
@@ -307,7 +307,7 @@ func reverseArray(arr []byte) []byte {
 func byteArray2str(arr []byte) string {
 	res := ""
 	for _, v := range arr {
-		res += string(v+'0')
+		res += string(v + '0')
 	}
 	return res
 }
@@ -330,10 +330,9 @@ func judgeSubStr(s, t string) bool {
 			i++
 		}
 		j++
-	} 
+	}
 	return i == len(s)
 }
-
 
 // 定义重复字符串是由两个相同的字符串首尾拼接而成。例如："abcabc" 是一个长度为 6 的重复字符串，
 // 因为它由两个 "abc" 串拼接而成；"abcba" 不是重复字符串，因为它不能由两个相同的字符串拼接而成。
@@ -342,7 +341,7 @@ func judgeSubStr(s, t string) bool {
 func maxRepeatSubstr(s string) int {
 	max := 0
 	for i := 0; i < len(s); i++ {
-		for j := i+2; j <= len(s); j++ {
+		for j := i + 2; j <= len(s); j++ {
 			sub := s[i:j]
 			if len(sub)%2 == 0 {
 				sub1 := sub[:len(sub)/2]
@@ -382,14 +381,13 @@ func TestMaxRepeat(t *testing.T) {
 	// t.Log(maxRepeatSubStr1(s3))
 }
 
-
 //查找两个字符串最长公共子串
-func LCS( str1 string ,  str2 string ) string {
-    // 二维数组存储所有的str1和str2相等字符的索引位置
-    var dp [][]int
-    for i:=0;i<len(str1);i++ {
-        for j:=0;j<len(str2);j++ {
-            if str1[i] == str2[j] {
+func LCS(str1 string, str2 string) string {
+	// 二维数组存储所有的str1和str2相等字符的索引位置
+	var dp [][]int
+	for i := 0; i < len(str1); i++ {
+		for j := 0; j < len(str2); j++ {
+			if str1[i] == str2[j] {
 				//有连续相等的子串，则不用添加后续索引位置
 				if len(dp) > 0 {
 					temp := dp[len(dp)-1]
@@ -397,27 +395,27 @@ func LCS( str1 string ,  str2 string ) string {
 						continue
 					}
 				}
-                in := []int{i,j}
-                dp = append(dp, in)
-            }
-        }
-    }
-    res := ""
-    for _,v := range dp {
-        i,j := v[0],v[1]
-        for i<len(str1) && j<len(str2) {
-            if str1[i] == str2[j] {
-                if i-v[0] >= len(res) {
-                    res = str1[v[0]:i+1]
-                }
-                i++
-                j++
-            } else{
-                break
-            }
-        }
-    }
-    return res
+				in := []int{i, j}
+				dp = append(dp, in)
+			}
+		}
+	}
+	res := ""
+	for _, v := range dp {
+		i, j := v[0], v[1]
+		for i < len(str1) && j < len(str2) {
+			if str1[i] == str2[j] {
+				if i-v[0] >= len(res) {
+					res = str1[v[0] : i+1]
+				}
+				i++
+				j++
+			} else {
+				break
+			}
+		}
+	}
+	return res
 }
 
 func TestLCS(t *testing.T) {

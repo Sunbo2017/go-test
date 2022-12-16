@@ -244,7 +244,7 @@ func TestSum(t *testing.T) {
 // 判断n是否是质数
 // 按素数的定义，也就是只有 1 与本身可以整除，所以可以用 2→ i-1 去除 i，如果都除不尽，i 就是素数。
 // 观点对，但却笨拙。当 i>2 时，有哪一个数可以被 i-1 除尽的？没有！
-// 为什么？如果 i 不是质数，那么 i=a×b，此地 a 与 b 既不是 i 又不是 1；
+// 为什么？如果 i 不是质数，那么 i=a×b，此时 a 与 b 既不是 i 又不是 1；
 // 正因为 a>1，a 至少为 2，因此 b 最多也是 i/2 而已，去除 i 的数用不着是 2→ i-1，而用 2→ i/2 就可以了。
 // 不但如此，因为 i=a×b，a 与 b 不能大于 sqrt(i)，为什么呢？
 // 如果 a>sqrt(i)，b>sqrt(i)，于是 a×b > sqrt(i)*sqrt(i) = i，因此就都不能整除i了。
@@ -282,7 +282,7 @@ func findPrimeAll(n int) {
 		count := 0
 		for v := range exitChan {
 			count++
-			fmt.Printf("channel:%v is finish,count=%v;", v, count)
+			fmt.Printf("channel:%v is finish,count=%v;\n", v, count)
 			if count == 10 {
 				fmt.Println("close resChan")
 				close(resChan)
@@ -300,6 +300,7 @@ func findPrimeAll(n int) {
 		if !ok {
 			break
 		} else {
+			//fmt.Println(v)
 			total++
 		}
 	}
@@ -312,7 +313,7 @@ func findPrime(in, exit chan int, out chan string, num int) {
 	for v := range in {
 		if res := judgePrime(v); res {
 			// fmt.Println(v)
-			out <- fmt.Sprintf("%v:%v", num, v)
+			out <- fmt.Sprintf("goroutine-%v:%v", num, v)
 		}
 	}
 	exit <- num
@@ -320,13 +321,14 @@ func findPrime(in, exit chan int, out chan string, num int) {
 
 func TestFindPrime(t *testing.T) {
 	start := time.Now().Unix()
-	// findPrimeAll(100000000)
+
+	findPrimeAll(100000000)
 
 	// _CalcPrimes()
 	// fmt.Println(_Primes)
 	// fmt.Println(100000000, "以内的素数个数为", _N)
 
-	findPrimeBySieve(100000000)
+	//findPrimeBySieve(100000000)
 	fmt.Println("finish...")
 	end := time.Now().Unix()
 

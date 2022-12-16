@@ -47,7 +47,7 @@ func InsertSort(arr []int) {
 		for j := i; j > 0; j-- {
 			if arr[j] < arr[j-1] {
 				arr[j-1], arr[j] = arr[j], arr[j-1]
-			} else{
+			} else {
 				// 前边元素一直有序，所以当出现不满足的元素时可以直接跳出内层循环
 				break
 			}
@@ -81,33 +81,33 @@ func QuickSort(arr []int, begin, end int) {
 // 快速排序：这种写法更易理解
 // 时间复杂度：O(N*logN)
 func quickSort(arr []int, start, end int) {
-    if start < end {
-        i, j := start, end
-        // pivot := arr[(start+end)/2]
+	if start < end {
+		i, j := start, end
+		// pivot := arr[(start+end)/2]
 		pivot := arr[start]
-        for i <= j {
-            for arr[i] < pivot {
-                i++
-            }
-            for arr[j] > pivot {
-                j--
+		for i <= j {
+			for arr[i] < pivot {
+				i++
+			}
+			for arr[j] > pivot {
+				j--
 			}
 			// 大数右移，小数左移
-            if i <= j {
-                arr[i], arr[j] = arr[j], arr[i]
-                i++
-                j--
-            }
-        }
- 
+			if i <= j {
+				arr[i], arr[j] = arr[j], arr[i]
+				i++
+				j--
+			}
+		}
+
 		//经过最后一次循环计算，j缩小为中轴前一位，i增大为中轴后一位
-        if start < j {
-            quickSort(arr, start, j)
-        }
-        if end > i {
-            quickSort(arr, i, end)
-        }
-    }
+		if start < j {
+			quickSort(arr, start, j)
+		}
+		if end > i {
+			quickSort(arr, i, end)
+		}
+	}
 }
 
 func quickSort1(a []int, lo, hi int) {
@@ -124,8 +124,9 @@ func partitionSort(a []int, lo, hi int) int {
 	i := lo - 1
 	for j := lo; j < hi; j++ {
 		if a[j] <= pivot {
-			//i为慢指针，记录大于基准值的元素位置索引
+			//i为慢指针，记录小于基准值的元素位置索引
 			i++
+			//小数左移
 			a[j], a[i] = a[i], a[j]
 		}
 	}
@@ -221,9 +222,11 @@ func HeapSort(arr []int) {
 	}
 }
 
+//数量级小与1000时，各种排序均可在1ns之内完成，无法统计时间；平方复杂度下，10000数量级插入排序最快
+//但是在万级元素下，快排和插入排序并没有拉开太大差距，十万数量级下快排优势明显
 func TestMySort(t *testing.T) {
 	//数量级，控制参与排序的数字总量
-	num := 10
+	num := 100000
 	array := []int{}
 	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8, 10, 20, 50, 21, 16, 12, 18, 23, 30, 40, 32}
 	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8}
@@ -231,61 +234,61 @@ func TestMySort(t *testing.T) {
 	rand.Seed(time.Now().Unix())
 	for i := 0; i < num; i++ {
 		r := rand.Intn(num)
-		fmt.Println(r)
+		//fmt.Println(r)
 		array = append(array, r)
 	}
 
+	//fmt.Println(array)
+
 	start := time.Now().UnixNano()
 	fmt.Printf("start time: %v \n", start)
-	// fmt.Println(array)
 
-	// SelectSort(array) //数量级1000：3000300 ns 2998000 3007200 数量级10000：236098400
-	// Bubble(array) //数量级1000：3000400 ns 3000500 3001600 3000700 2009100 1994100 数量级10000：234680800 231802700
-	// InsertSort(array) //数量级1000：2000600 ns 1999600 2001000 2013600 数量级10000：148584200
+	//SelectSort(array) //数量级1000：3000300 ns 2998000 3007200 数量级10000：123961100
+	//Bubble(array) //数量级1000：3000400 ns 3000500 3001600 3000700 2009100 1994100 数量级10000：75448300
+	//InsertSort(array) //数量级1000：2000600 ns 1999600 2001000 2013600 数量级10000：40950500; 100000: 4338811300
 	// MergeSort(array, 0, len(array)-1) //数量级10000：3008000
 	// HeapSort(array) //数量级10000：2000200
 	// QuickSort(array, 0, len(array)-1) //数量级10000：1000300
-	quickSort1(array, 0, len(array)-1) //数量级10000：1000300
+	quickSort1(array, 0, len(array)-1) //数量级10000：1000300; 100000: 5340800
 
 	// fmt.Println(array)
 	end := time.Now().UnixNano()
 	fmt.Printf("end time: %v \n", end)
-	fmt.Printf("time cost: %v", end-start)
-	for i := 0; i < num; i++ {
-		fmt.Println(array[i])
-	}
+	fmt.Printf("time cost: %v ns\n", end-start)
+
+	//fmt.Println(array)
 }
 
 // 二分查找
 func binarySearch(sortedArray []int, target int) int {
-    low := 0
-    high := len(sortedArray) - 1
-    for low <= high {
-        mid :=low + (high - low)/2
-        midValue := sortedArray[mid]
-        if midValue < target {
+	low := 0
+	high := len(sortedArray) - 1
+	for low <= high {
+		mid := low + (high-low)/2
+		midValue := sortedArray[mid]
+		if midValue < target {
 			low = mid + 1
-        } else if midValue > target {
-            high = mid -1
-        } else {
-            return mid
-        }
-    }
-    return -1
+		} else if midValue > target {
+			high = mid - 1
+		} else {
+			return mid
+		}
+	}
+	return -1
 }
 
 //有一个整数数组，请你根据快速排序的思路，找出数组中第 k 大的数。
-//给定一个整数数组 a ,同时给定它的大小n和要找的 k 
+//给定一个整数数组 a ,同时给定它的大小n和要找的 k
 // step 1：进行一次快排，大元素在左，小元素在右，得到的中轴p点。
 // step 2：如果 p - low + 1 = k ，那么p点就是第K大。
 // step 3：如果 p - low + 1 > k，则第k大的元素在左半段，更新high = p - 1，执行step 1。
 // step 4：如果 p - low + 1 < k，则第k大的元素在右半段，更新low = p + 1, 且 k = k - (p - low + 1)，排除掉前面部分更大的元素，再执行step 1.
-func findTopK(arr []int, n,k int) int {
+func findTopK(arr []int, n, k int) int {
 	return quickSort2(arr, 0, n-1, k)
 }
 
 func TestFindTopK(t *testing.T) {
-	arr := []int{5,3,6,9,2,1,4}
+	arr := []int{5, 3, 6, 9, 2, 1, 4}
 	res := findTopK(arr, len(arr), 5)
 	t.Log(res)
 }
@@ -296,7 +299,7 @@ func quickSort2(arr []int, low, high, k int) int {
 		return arr[p]
 	} else if p-low+1 > k {
 		//递归左边
-		return quickSort2(arr, low, p - 1, k)
+		return quickSort2(arr, low, p-1, k)
 	} else {
 		//递归右边
 		return quickSort2(arr, p+1, high, k)
@@ -326,7 +329,7 @@ func partitionSortDesc(a []int, lo, hi int) int {
 // 然后再判断p，利用二分法
 //     如果[l,p), p，也就是p+1个元素（因为下标从0开始），如果p+1 == k, 找到答案
 //     2。 如果p+1 < k, 说明答案在[p+1, r)区间内，
-//     3， 如果p+1 > k , 说明答案在[l, p)内 
+//     3， 如果p+1 > k , 说明答案在[l, p)内
 func findLastK(arr []int, k int) []int {
 	res := []int{}
 	if k == 0 || k > len(arr) {
@@ -340,7 +343,7 @@ func findLastK(arr []int, k int) []int {
 		}
 		if p+1 < k {
 			low = p + 1
-		}else{
+		} else {
 			high = p - 1
 		}
 	}
@@ -360,7 +363,7 @@ func findLastKWithQueue(arr []int, k int) []int {
 			// if v > queue[0] {
 			// 	queue[0], queue[i] = queue[i], queue[0]
 			// }
-		}else {
+		} else {
 			if v < queue[0] {
 				queue = queue[1:]
 				queue = append(queue, v)
@@ -371,7 +374,7 @@ func findLastKWithQueue(arr []int, k int) []int {
 }
 
 func TestFindLastK(t *testing.T) {
-	arr := []int{5,3,6,9,2,1,4,10,11,7,9,15}
+	arr := []int{5, 3, 6, 9, 2, 1, 4, 10, 11, 7, 9, 15}
 	res := findLastK(arr, 5)
 	// res := findLastKWithQueue(arr, 5)
 	t.Log(res)

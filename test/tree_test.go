@@ -392,6 +392,29 @@ func judgeSearchTree1(root *treeNode, maxVal, minVal string) bool {
 	return true
 }
 
+//中序遍历
+//提前记录前一个节点的值
+var prev string = "min"
+var flag bool = true
+
+func judgeSearchTree2(root *treeNode) bool {
+
+	if root.left != nil && flag {
+		judgeSearchTree2(root.left)
+	}
+
+	if root.value < prev {
+		flag = false
+	}
+	prev = root.value
+
+	if root.right != nil && flag {
+		judgeSearchTree2(root.right)
+	}
+
+	return flag
+}
+
 func TestJudgeSearchTree(t *testing.T) {
 	node := createTree()
 	judgeSearchTree(node)
@@ -431,8 +454,7 @@ func recoverTree(root *TreeNode) {
 		target1.Val, target2.Val = target2.Val, target1.Val
 	}
 }
-func inOrderTraverse(root, prev, target1, target2 *TreeNode) (*TreeNode,
-	*TreeNode, *TreeNode) {
+func inOrderTraverse(root, prev, target1, target2 *TreeNode) (*TreeNode, *TreeNode, *TreeNode) {
 	if root == nil {
 		return prev, target1, target2
 	}
