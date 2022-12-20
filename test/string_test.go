@@ -425,3 +425,47 @@ func TestLCS(t *testing.T) {
 	res := LCS(a, b)
 	t.Log(res)
 }
+
+//最小覆盖字串
+//输入: S = "ADOBECODEBANC", T = "ABC"
+//输出: "BANC"
+func minWindow(s string, t string) string {
+	wind := make(map[byte]int)
+	need := make(map[byte]int)
+	for i := range t {
+		need[t[i]]++
+	}
+	left, right, match, start, end, min := 0, 0, 0, 0, 0, len(s)
+	for right < len(s) {
+		c := s[right]
+		right++
+		if need[c] != 0 {
+			wind[c]++
+			if wind[c] == need[c] {
+				match++
+			}
+		}
+		for match == len(need) {
+			if right-left < min {
+				min = right - left
+				start = left
+				end = right
+			}
+			c = s[left]
+			left++
+			if need[c] != 0 {
+				//可能存在s-->aaaa  t-->a,
+				//这里只有当s的最后一个a也被移出窗口的时候
+				//匹配数才少了1
+				if wind[c] == need[c] {
+					match--
+				}
+				wind[c]--
+			}
+		}
+	}
+	if min == len(s) {
+		return ""
+	}
+	return s[start:end]
+}
