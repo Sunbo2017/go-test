@@ -39,4 +39,4 @@ jobs:
         run: |
           echo $INPUT_TITLE 
           echo $INPUT_CONTENT  
-          echo RELEASE_MSG
+          echo $RELEASE_MSG
