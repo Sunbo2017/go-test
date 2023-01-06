@@ -41,7 +41,7 @@ jobs:
           INPUT_TITLE: "Spider 构建成功"
           #INPUT_TAG: "tag: ${{ steps.tag.outputs.tag }}"
           #COMMIT_MSG: "commit messages: ${{ github.event.commits[0].message }} -- ${{ github.event.commits[1].message }} -- ${{ github.event.commits[2].message }} -- ${{ github.event.commits[3].message }}"
-          RELEASE_MSG: "1:title: ${{ steps.latest_release.outputs.name }} \n url: ${{ steps.latest_release.outputs.html_url }}"
+          RELEASE_MSG: "1:title: ${{ steps.latest_release.outputs.name }} \n url: ${{ steps.latest_release.outputs.html_url }}\n tag: ${{ steps.latest_release.outputs.tag_name }}"
           RELEASE_MSG1: "2:title: ${{ steps.check_release.outputs.release }}\n message: ${{ steps.check_release.outputs.body }}"
           #INPUT_CONTENT: "repo: ${{ github.repository }}\n info: ${{ github.event.head_commit.message }}$"
           INPUT_CONTENT: "repo: ${{ github.repository }}"
