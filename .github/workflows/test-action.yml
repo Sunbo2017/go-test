@@ -28,6 +28,9 @@ jobs:
           #INPUT_TAG: "tag: ${{ steps.tag.outputs.tag }}"
           COMMIT_MSG: "${{ github.event.commits }}"
           #RELEASE_MSG: "${{ github.event.release }}"
-          INPUT_CONTENT: "repo: ${{ github.repository }}\n info: ${{ github.event.head_commit.message }}$"
-        run: 
-          echo $INPUT_TITLE | $INPUT_CONTENT | $COMMIT_MSG
+          #INPUT_CONTENT: "repo: ${{ github.repository }}\n info: ${{ github.event.head_commit.message }}$"
+          INPUT_CONTENT: "repo: ${{ github.repository }}"
+        run: |
+          echo $INPUT_TITLE 
+          echo $INPUT_CONTENT  
+          echo $COMMIT_MSG"
