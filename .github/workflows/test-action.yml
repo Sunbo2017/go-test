@@ -28,15 +28,25 @@ jobs:
           token: ${{ github.token }}
           latest: true
 
+      - name: Get latest release1
+        id: check_release
+        uses: Rubemlrm/gh-check-last-release@main
+        with:
+          github_token: ${{ secrets.github_token }}
+          owner: "Sunbo2017"
+          repo: "go-test"
+
       - name: Show Infos
         env:
           INPUT_TITLE: "Spider 构建成功"
           #INPUT_TAG: "tag: ${{ steps.tag.outputs.tag }}"
           #COMMIT_MSG: "commit messages: ${{ github.event.commits[0].message }} -- ${{ github.event.commits[1].message }} -- ${{ github.event.commits[2].message }} -- ${{ github.event.commits[3].message }}"
           RELEASE_MSG: "title: ${{ steps.latest_release.outputs.name }} \n url: ${{ steps.latest_release.outputs.html_url }}"
+          RELEASE_MSG1: "title: ${{ steps.check_release.outputs.release }}\n message: ${{ steps.check_release.outputs.body }}"
           #INPUT_CONTENT: "repo: ${{ github.repository }}\n info: ${{ github.event.head_commit.message }}$"
           INPUT_CONTENT: "repo: ${{ github.repository }}"
         run: |
           echo $INPUT_TITLE 
           echo $INPUT_CONTENT  
           echo $RELEASE_MSG
+          echo $RELEASE_MSG1
