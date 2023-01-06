@@ -19,8 +19,8 @@ jobs:
        # id: tag
         #uses: dawidd6/action-get-tag@v1
 
-      - name: Build
-        run: go build -v ./cmd/spider/main.go
+      #- name: Build
+       # run: go build -v ./cmd/spider/main.go
         
       - name: Show Infos
         env:
