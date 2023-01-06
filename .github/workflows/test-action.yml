@@ -33,4 +33,4 @@ jobs:
         run: |
           echo $INPUT_TITLE 
           echo $INPUT_CONTENT  
-          echo $COMMIT_MSG"
+          echo $COMMIT_MSG
