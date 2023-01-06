@@ -26,7 +26,7 @@ jobs:
         env:
           INPUT_TITLE: "Spider 构建成功"
           #INPUT_TAG: "tag: ${{ steps.tag.outputs.tag }}"
-          COMMIT_MSG: "${{ github.event.commits }}"
+          COMMIT_MSG: "${{ github.event.commits[0].message }} \n ${{ github.event.commits[1].message }} \n ${{ github.event.commits[2].message }} \n ${{ github.event.commits[3].message }}"
           #RELEASE_MSG: "${{ github.event.release }}"
           #INPUT_CONTENT: "repo: ${{ github.repository }}\n info: ${{ github.event.head_commit.message }}$"
           INPUT_CONTENT: "repo: ${{ github.repository }}"
