@@ -1,0 +1,30 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  release:
+    types:
+      - published
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+
+      - name: Build
+        run: go build -v ./cmd/spider/main.go
+        
+      - name: Show Infos
+        env:
+          INPUT_TITLE: "Spider 构建成功"
+          INPUT_CONTENT: "repo: ${{ github.repository }}\ntag: ${{ steps.tag.outputs.tag }}\ninfo: ${{ github.event.head_commit.message }}$"
+        run: 
+          echo $INPUT_TITLE $INPUT_CONTENT
