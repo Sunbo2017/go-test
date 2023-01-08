@@ -21,12 +21,12 @@ jobs:
 
       #- name: Build
        # run: go build -v ./cmd/spider/main.go
-      - name: Get latest release
-        id: latest_release
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
-          latest: true
+      #- name: Get latest release
+       # id: latest_release
+        #uses: kaliber5/action-get-release@v1
+        #with:
+         # token: ${{ github.token }}
+          #latest: true
 
       - name: Get latest release1
         id: release
@@ -49,13 +49,12 @@ jobs:
           INPUT_TITLE: "Spider 构建成功"
           #INPUT_TAG: "tag: ${{ steps.tag.outputs.tag }}"
           #COMMIT_MSG: "commit messages: ${{ github.event.commits[0].message }} -- ${{ github.event.commits[1].message }} -- ${{ github.event.commits[2].message }} -- ${{ github.event.commits[3].message }}"
-          RELEASE_MSG: "1:title: ${{ steps.latest_release.outputs.name }} \n url: ${{ steps.latest_release.outputs.html_url }}\n tag: ${{ steps.latest_release.outputs.tag_name }}"
-          RELEASE_MSG1: "1:title: ${{ steps.release.outputs.name }} \n url: ${{ steps.release.outputs.html_url }}\n tag: ${{ steps.release.outputs.tag_name }}"
+          #RELEASE_MSG: "1:title: ${{ steps.latest_release.outputs.name }} \n url: ${{ steps.latest_release.outputs.html_url }}\n tag: ${{ steps.latest_release.outputs.tag_name }}"
+          RELEASE_MSG1: "1:title: ${{ steps.release.outputs.name }} \n url: ${{ steps.release.outputs.html_url }}\n tag: ${{ steps.release.outputs.tag_name }}\n title: ${{ steps.release.outputs.body }}"
           #RELEASE_MSG1: "2:title: ${{ steps.check_release.outputs.release }}\n message: ${{ steps.check_release.outputs.body }}"
           #INPUT_CONTENT: "repo: ${{ github.repository }}\n info: ${{ github.event.head_commit.message }}$"
           INPUT_CONTENT: "repo: ${{ github.repository }}"
         run: |
           echo $INPUT_TITLE 
-          echo $INPUT_CONTENT  
-          echo $RELEASE_MSG
+          echo $INPUT_CONTENT
           echo $RELEASE_MSG1
