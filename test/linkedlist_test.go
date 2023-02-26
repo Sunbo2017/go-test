@@ -46,6 +46,15 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 	return head.Next
 }
 
+//合并N个有序链表
+func mergeNList(lists []*ListNode) *ListNode {
+	res := mergeTwoLists(lists[0], lists[1])
+	for i := 2; i < len(lists); i++ {
+		res = mergeTwoLists(res, lists[i])
+	}
+	return res
+}
+
 func TestMergeTwoLists(t *testing.T) {
 	l1, l2 := &ListNode{0, nil}, &ListNode{0, nil}
 	cur1, cur2 := l1, l2
