@@ -469,3 +469,27 @@ func minWindow(s string, t string) string {
 	}
 	return s[start:end]
 }
+
+//给定一个字符串，按照a->z,b->y...m->n,n->m规则置换
+func replaceStr(s string) string {
+	var resBytes []byte
+	for _, v := range s {
+		if v <= 'm' {
+			c := 'm' - v
+			n := 'n' + c
+			resBytes = append(resBytes, byte(n))
+		} else if v >= 'n' {
+			c := v - 'n'
+			m := 'm' - c
+			resBytes = append(resBytes, byte(m))
+		}
+	}
+
+	return string(resBytes)
+}
+
+func TestReplaceStr(t *testing.T) {
+	s := "abcmnxyz"
+	r := replaceStr(s)
+	t.Log(r)
+}
