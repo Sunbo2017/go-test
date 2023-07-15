@@ -249,7 +249,7 @@ func rmDuplicateArray(arr []int) {
 }
 
 func TestRmDuplicates(t *testing.T) {
-	arr := []int{1,1,1,2,2,2,3,3,4,5,6,6,7}
+	arr := []int{1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 6, 7}
 	rmDuplicateArray(arr)
 }
 
@@ -261,7 +261,7 @@ func removeElements(nums []int, val int) int {
 	}
 	// 记录相等数字的下标位置
 	count := 0
-	for i:=0;i<len(nums);i++ {
+	for i := 0; i < len(nums); i++ {
 		if nums[i] != val {
 			if i != count {
 				// 交换位置，相等元素后移，不等元素前移
@@ -275,7 +275,7 @@ func removeElements(nums []int, val int) int {
 }
 
 func TestRemoveElements(t *testing.T) {
-	nums := []int{0,1,2,2,3,0,4,2}
+	nums := []int{0, 1, 2, 2, 3, 0, 4, 2}
 	val := 2
 	count := removeElements(nums, val)
 	t.Log(count)
@@ -286,7 +286,7 @@ func TestRemoveElements(t *testing.T) {
 // 应用贪心算法：每⼀步都做出⼀个局部最优的选择，最终的结果就是全局最优。
 func judgeJump2last(arr []int) bool {
 	n, far := len(arr), 0
-	for i:=0;i<n-1;i++ {
+	for i := 0; i < n-1; i++ {
 		// 不断计算能跳到的最远距离
 		far = Max(far, i+arr[i])
 		// 可能碰到了 0，卡住跳不动了
@@ -298,11 +298,10 @@ func judgeJump2last(arr []int) bool {
 }
 
 func TestJump(t *testing.T) {
-	arr := []int{3,2,1,0,4,5}
+	arr := []int{3, 2, 1, 0, 4, 5}
 	res := judgeJump2last(arr)
 	t.Log(res)
 }
-
 
 // 给定⼀个不重复的排序数组和⼀个⽬标值，在数组中找到⽬标值，并返回其索引。
 // 如果⽬标值不存在于数组中，返回它将会被按顺序插⼊的位置。
@@ -331,7 +330,8 @@ func searchInsert(nums []int, target int) int {
 // 要求你的算法返回幂运算  a^b  的计算结果与 1337 取模（mod，也就是余数）后的结果。
 // 就是你先得计算幂  a^b  ，但是这个  b  会⾮常⼤，所以  b 是⽤数组的形式表⽰的。
 // 公式：(a * b) % k = (a % k)(b % k) % k
-var base = 1337;
+var base = 1337
+
 // 计算 a 的 k 次⽅然后与 base 求模的结果
 func mypow(a, k int) int {
 	// 对因⼦求模
@@ -339,11 +339,11 @@ func mypow(a, k int) int {
 	res := 1
 	for i := 0; i < k; i++ {
 		// 这⾥有乘法，是潜在的溢出点
-		res *= a;
+		res *= a
 		// 对乘法结果求模
-		res %= base;
+		res %= base
 	}
-	return res;
+	return res
 }
 
 func superPow(a int, b []int) int {
@@ -359,7 +359,6 @@ func superPow(a int, b []int) int {
 	return (part1 * part2) % base
 }
 
-
 // 在一个二维数组array中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，
 // 每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
 // [
@@ -369,7 +368,7 @@ func superPow(a int, b []int) int {
 // [6,8,11,15]
 // ]
 // 给定 target = 7，返回 true。
-// 给定 target = 3，返回 false。 
+// 给定 target = 3，返回 false。
 // 暴力解法，双重循环，直接查找
 // 采用分治法，二分查找变种：
 // step 1：首先获取矩阵的两个边长，判断特殊情况。
@@ -381,13 +380,13 @@ func find2Array(arr [][]int, target int) bool {
 	if a == 0 || b == 0 {
 		return false
 	}
-	for i,j := a-1,0; i>=0&&j<b; {
+	for i, j := a-1, 0; i >= 0 && j < b; {
 		//元素较大，往上走
 		if arr[i][j] > target {
 			i--
-		}else if arr[i][j] < target {
+		} else if arr[i][j] < target {
 			j++
-		}else {
+		} else {
 			return true
 		}
 	}
@@ -430,7 +429,7 @@ func getMaxProfit1(prices []int) int {
 //贪心：只要收益为正就累加收益
 func getMaxProfit2(prices []int) int {
 	sum := 0
-	for i:=1;i<len(prices);i++ {
+	for i := 1; i < len(prices); i++ {
 		if prices[i] > prices[i-1] {
 			sum += prices[i] - prices[i-1]
 		}
@@ -445,19 +444,47 @@ func getMaxProfit3(prices []int) int {
 	// sell1代表第1次卖出的股票收益
 	// buy2 代表第2次买入的股票收益
 	// sell2代表第2次卖出的股票收益
-	
+
 	// 基本状态
 	// buy1=-price, sell1=0
 	// buy2=-price, sell2=0
 	buy1, sell1 := -prices[0], 0
 	buy2, sell2 := -prices[0], 0
-	for i := 1; i< len(prices); i++ {
+	for i := 1; i < len(prices); i++ {
 		price := prices[i]
 		// 转移方程
-		buy1  = Max(buy1, - price);
-		sell1 = Max(sell1, buy1 + price);
-		buy2  = Max(buy2, sell1 - price);
-		sell2 = Max(sell2, buy2 + price);
+		buy1 = Max(buy1, -price)
+		sell1 = Max(sell1, buy1+price)
+		buy2 = Max(buy2, sell1-price)
+		sell2 = Max(sell2, buy2+price)
 	}
 	return sell2
+}
+
+func josephus(n int) int {
+	nums := make([]int, n)
+	for i := 0; i < n; i++ {
+		nums[i] = i + 1
+	}
+
+	m := 1
+	for len(nums) > 1 {
+		for i := 0; i < len(nums); i++ {
+			if m > 3 {
+				m = 1
+			}
+			if m%3 == 0 {
+				nums = append(nums[:i], nums[i+1:]...)
+				i--
+			}
+			m++
+		}
+	}
+
+	return nums[0]
+}
+
+func TestJosephus(t *testing.T) {
+	r := josephus(5)
+	t.Log(r)
 }

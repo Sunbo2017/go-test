@@ -57,25 +57,29 @@ func InsertSort(arr []int) {
 
 // 快速排序：选中一个基准值，使得其左侧所有元素小于它，右侧大于它，从基准值位置将数组分为两部分，递归排序
 // 时间复杂度：O(N*logN)
-func QuickSort(arr []int, begin, end int) {
-	if begin < end {
-		// 基准值
-		pivot := arr[end]
-		i := begin - 1
-		// 大数右移，小数左移
-		for j := begin; j < end; j++ {
-			if arr[j] <= pivot {
-				i++
-				arr[j], arr[i] = arr[i], arr[j]
-			}
-		}
-		// 找到了中间位置
-		i++
-		// 将基准值pivot移到中间
-		arr[end], arr[i] = arr[i], arr[end]
-		QuickSort(arr, begin, i-1)
-		QuickSort(arr, i+1, end)
+func QuickSort(a []int, lo, hi int) {
+	if lo >= hi {
+		return
 	}
+	p := partitionSort(a, lo, hi)
+	QuickSort(a, lo, p-1)
+	QuickSort(a, p+1, hi)
+}
+
+func partitionSort(a []int, lo, hi int) int {
+	pivot := a[hi]
+	i := lo - 1
+	for j := lo; j < hi; j++ {
+		if a[j] <= pivot {
+			//i为慢指针，记录小于基准值的元素位置索引
+			i++
+			//小数左移
+			a[j], a[i] = a[i], a[j]
+		}
+	}
+	//确定基准值的位置并置换
+	a[i+1], a[hi] = a[hi], a[i+1]
+	return i + 1
 }
 
 // 快速排序：这种写法更易理解
@@ -108,31 +112,6 @@ func quickSort(arr []int, start, end int) {
 			quickSort(arr, i, end)
 		}
 	}
-}
-
-func quickSort1(a []int, lo, hi int) {
-	if lo >= hi {
-		return
-	}
-	p := partitionSort(a, lo, hi)
-	quickSort1(a, lo, p-1)
-	quickSort1(a, p+1, hi)
-}
-
-func partitionSort(a []int, lo, hi int) int {
-	pivot := a[hi]
-	i := lo - 1
-	for j := lo; j < hi; j++ {
-		if a[j] <= pivot {
-			//i为慢指针，记录小于基准值的元素位置索引
-			i++
-			//小数左移
-			a[j], a[i] = a[i], a[j]
-		}
-	}
-	//确定基准值的位置并置换
-	a[i+1], a[hi] = a[hi], a[i+1]
-	return i + 1
 }
 
 // 归并排序，算法是采用分治法（Divide and Conquer）的一个非常典型的应用，且各层分治递归可以同时进行。
@@ -228,7 +207,7 @@ func TestMySort(t *testing.T) {
 	//数量级，控制参与排序的数字总量
 	num := 100000
 	array := []int{}
-	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8, 10, 20, 50, 21, 16, 12, 18, 23, 30, 40, 32}
+	array1 := []int{5, 6, 3, 2, 1, 0, 9, 7, 8, 10, 20, 50, 21, 16, 12, 18, 23, 30, 40, 32}
 	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8}
 	// 随机种子，不加的话每次产生的随机数相同
 	rand.Seed(time.Now().Unix())
@@ -249,9 +228,9 @@ func TestMySort(t *testing.T) {
 	// MergeSort(array, 0, len(array)-1) //数量级10000：3008000
 	// HeapSort(array) //数量级10000：2000200
 	// QuickSort(array, 0, len(array)-1) //数量级10000：1000300
-	quickSort1(array, 0, len(array)-1) //数量级10000：1000300; 100000: 5340800
+	QuickSort(array1, 0, len(array1)-1) //数量级10000：1000300; 100000: 5340800
 
-	// fmt.Println(array)
+	fmt.Println(array1)
 	end := time.Now().UnixNano()
 	fmt.Printf("end time: %v \n", end)
 	fmt.Printf("time cost: %v ns\n", end-start)

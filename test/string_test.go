@@ -56,7 +56,7 @@ func longestSubstring1(s string) int {
 		return 0
 	}
 	//
-	bitSet := make(map[byte]int, 256)
+	bitSet := make(map[byte]byte, 256)
 	// 结果，窗口起点和终点
 	result, left, right := 0, 0, 0
 	//右指针遇到重复值左指针就会接着走并将原来位置归0，所以左右指针之间一定是不重复子串，右指针走到头时，左指针也没必要继续走
@@ -492,4 +492,43 @@ func TestReplaceStr(t *testing.T) {
 	s := "abcmnxyz"
 	r := replaceStr(s)
 	t.Log(r)
+}
+
+//采用二维DP的方法。定义一个dp表,其中dp[i][j]表示str1[0..i-1]和str2[0..j-1]的最长公共子序列长度。递推方程如下:
+//如果str1[i-1]==str2[j-1],那么dp[i][j] = dp[i-1][j-1] + 1
+//如果str1[i-1]!=str2[j-1],那么dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+//最终dp[m][n]就是str1和str2的最长公共子序列长度。
+//时间复杂度O(MN),空间复杂度O(MN)。
+func longestCommonSubsequence(str1 string, str2 string) int {
+	m := len(str1)
+	n := len(str2)
+
+	dp := make([][]int, m+1)
+
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]int, n+1)
+	}
+
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if str1[i-1] == str2[j-1] {
+				dp[i][j] = dp[i-1][j-1] + 1
+			} else {
+				dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+			}
+		}
+	}
+
+	if dp[m][n] == 0 {
+		return 0
+	}
+
+	return dp[m][n]
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }

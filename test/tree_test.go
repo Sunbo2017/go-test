@@ -490,3 +490,45 @@ func getPathSum(root *TreeNode, maxSum *int) int {
 	*maxSum = Max(*maxSum, Max(currMax, left+right+root.Val))
 	return currMax
 }
+
+//给定一个数组，判断该数组是不是二叉搜索树的后续遍历结果
+func verifyPostorder(postorder []int) bool {
+
+	n := len(postorder)
+
+	if n == 0 {
+		return true
+	}
+
+	// 最后一个元素为根节点
+	root := postorder[n-1]
+
+	// 在二叉搜索树中左子树节点的值小于根节点的值，从当前区域找到第一个大于根节点的，说明后续区域数值都在右子树中
+	i := 0
+	for ; i < n-1; i++ {
+		if postorder[i] > root {
+			break
+		}
+	}
+
+	// 在二叉搜索树中右子树节点的值大于根节点的值
+	j := i
+	for ; j < n-1; j++ {
+		if postorder[j] < root {
+			return false
+		}
+	}
+
+	// 分别判断左右子树是否满足二叉搜索树
+	left := true
+	if i > 0 {
+		left = verifyPostorder(postorder[:i])
+	}
+
+	right := true
+	if i < n-1 {
+		right = verifyPostorder(postorder[i : n-1])
+	}
+
+	return left && right
+}

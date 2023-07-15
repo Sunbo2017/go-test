@@ -193,6 +193,47 @@ func rmBackwardsK(node *ListNode, k int) *ListNode {
 	return node
 }
 
+//给定一个链表和常数k,从链表倒数第k个节点处切断链表，反转这两段链表
+//如原链表{1,2,3,4,5},k=2,新链表为{4,5,1,2,3}
+func reverseListPart(head *ListNode, k int) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+	tail := &ListNode{0, nil}
+	tail1 := tail
+	cur, target := head, head
+	for cur != nil {
+		if k > 0 {
+			k--
+		} else {
+			tail1.Next = &ListNode{target.Val, nil}
+			tail1 = tail1.Next
+			target = target.Next
+		}
+		cur = cur.Next
+	}
+
+	res := target
+	for target.Next != nil {
+		target = target.Next
+	}
+	target.Next = tail.Next
+	return res
+}
+
+func TestReverseListPart(t *testing.T) {
+	head := &ListNode{0, nil}
+	node := head
+	for i := 1; i <= 10; i++ {
+		node.Next = &ListNode{i, nil}
+		node = node.Next
+	}
+	head.Next.Show()
+	fmt.Println("---------------")
+	res := reverseListPart(head.Next, 4)
+	res.Show()
+}
+
 func TestRmBackKList(t *testing.T) {
 	head := &ListNode{0, nil}
 	node := head
