@@ -9,21 +9,16 @@ import (
 
 // 冒泡排序：依次比较相邻两元素，每轮循环挑出最大值置于数组末尾
 // 时间复杂度：O(N^2)
-func Bubble(arr []int) {
-	size := len(arr)
-	var swapped bool
-	for i := size - 1; i > 0; i-- {
-		swapped = false
-		for j := 0; j < i; j++ {
-			if arr[j+1] < arr[j] {
+func Bubble(arr []int) []int {
+	length := len(arr)
+	for i := 0; i < length; i++ {
+		for j := 0; j < length-1-i; j++ {
+			if arr[j] > arr[j+1] {
 				arr[j], arr[j+1] = arr[j+1], arr[j]
-				swapped = true
 			}
 		}
-		if swapped != true {
-			break
-		}
 	}
+	return arr
 }
 
 // 选择排序：第一个元素依次与每个元素比较，每轮循环挑出最小值置于数组开头
@@ -53,6 +48,35 @@ func InsertSort(arr []int) {
 			}
 		}
 	}
+}
+
+//计数排序
+//当输入的元素是 n 个 0 到 k 之间的整数时，它的运行时间是 O(n + k)。计数排序不是比较排序，排序的速度快于任何比较排序算法。
+//算法的步骤如下：
+//（1）找出待排序的数组中最大和最小的元素
+//（2）统计数组中每个值为i的元素出现的次数，存入数组C的第i项
+//（3）对所有的计数累加（从C中的第一个元素开始，每一项和前一项相加）
+//（4）反向填充目标数组：将每个元素i放在新数组的第C(i)项，每放一个元素就将C(i)减去1
+func countingSort(arr []int, maxValue int) []int {
+	bucketLen := maxValue + 1
+	bucket := make([]int, bucketLen) // 初始为0的数组
+
+	sortedIndex := 0
+	length := len(arr)
+
+	for i := 0; i < length; i++ {
+		bucket[arr[i]] += 1
+	}
+
+	for j := 0; j < bucketLen; j++ {
+		for bucket[j] > 0 {
+			arr[sortedIndex] = j
+			sortedIndex += 1
+			bucket[j] -= 1
+		}
+	}
+
+	return arr
 }
 
 // 快速排序：选中一个基准值，使得其左侧所有元素小于它，右侧大于它，从基准值位置将数组分为两部分，递归排序
@@ -217,7 +241,7 @@ func TestMySort(t *testing.T) {
 		array = append(array, r)
 	}
 
-	//fmt.Println(array)
+	fmt.Println(array)
 
 	start := time.Now().UnixNano()
 	fmt.Printf("start time: %v \n", start)

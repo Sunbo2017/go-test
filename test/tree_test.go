@@ -257,6 +257,33 @@ func TestMaxDepth(t *testing.T) {
 	t.Log(depth)
 }
 
+//返回二叉树的左侧视图
+func leftSideView(root *TreeNode) []int {
+	// write code here
+	leftView(root)
+	return leftViewRes
+}
+
+var leftViewRes []int
+
+func leftView(root *TreeNode) {
+	if root == nil {
+		return
+	}
+
+	leftViewRes = append(leftViewRes, root.Val)
+
+	if root.Left == nil && root.Right == nil {
+		return
+	}
+
+	if root.Left != nil {
+		leftView(root.Left)
+	} else if root.Right != nil {
+		leftView(root.Right)
+	}
+}
+
 // 翻转二叉树 递归
 func mirrorBTree1(root *treeNode) {
 
@@ -268,6 +295,39 @@ func mirrorBTree1(root *treeNode) {
 
 	mirrorBTree1(root.left)
 	mirrorBTree1(root.right)
+}
+
+//判断两个二叉树是否相同
+func isSameTree(p, q *TreeNode) bool {
+	if p == nil && q == nil {
+		return true
+	}
+	if p == nil || q == nil || p.Val != q.Val {
+		return false
+	}
+	return isSameTree(p.Left, q.Left) && isSameTree(p.Right, q.Right)
+}
+
+//判断二叉树是否轴对称
+func isSymmetric(root *TreeNode) bool {
+	// write code here
+	if root == nil {
+		return true
+	}
+	return isSymmetricTree(root.Left, root.Right)
+}
+
+func isSymmetricTree(root1, root2 *TreeNode) bool {
+	if root1 == nil {
+		return root2 == nil
+	}
+	if root2 == nil {
+		return root1 == nil
+	}
+	if root1.Val != root2.Val {
+		return false
+	}
+	return isSymmetricTree(root1.Left, root2.Right) && isSymmetricTree(root1.Right, root2.Left)
 }
 
 // 翻转二叉树 遍历

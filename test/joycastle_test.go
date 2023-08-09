@@ -1,35 +1,36 @@
 package test
 
 import (
-	"testing"
 	"fmt"
 	"math/rand"
+	"testing"
 	"time"
 )
 
 var out []rune
+
 // Perm() 对 a 形成的每⼀排列调⽤ f().
 func Perm(a []rune, f func([]rune)) {
-    perm(a, f, 0)
+	perm(a, f, 0)
 }
 
 // 对索引 i 从 0 到 len(a) - 1，实现递归函数 perm().
 func perm(a []rune, f func([]rune), i int) {
-    // TODO
-    if i == len(a) {
-        // new := []rune{}
-        // new = append(new, out...)
-        // f(new)
+	// TODO
+	if i == len(a) {
+		// new := []rune{}
+		// new = append(new, out...)
+		// f(new)
 		f(out)
-    }
-    for _, v := range a {
-        if contains(out, v) {
-            continue
-        }
-        out = append(out, v)
-        perm(a, f, i+1)
-        out = out[:len(out)-1]
-    }
+	}
+	for _, v := range a {
+		if contains(out, v) {
+			continue
+		}
+		out = append(out, v)
+		perm(a, f, i+1)
+		out = out[:len(out)-1]
+	}
 }
 
 func contains(a []rune, x rune) bool {
@@ -42,22 +43,22 @@ func contains(a []rune, x rune) bool {
 }
 
 func TestPerm(t *testing.T) {
-    Perm([]rune("ABC"), func(a []rune) {
-        fmt.Println(string(a))
-    })
+	Perm([]rune("ABC"), func(a []rune) {
+		fmt.Println(string(a))
+	})
 }
-
 
 func rand13() int {
 	// rand.Seed(time.Now().UnixNano())
-	return rand.Intn(13)+1
+	return rand.Intn(13) + 1
 }
 
 func rand5() int {
 	// rand.Seed(time.Now().UnixNano())
-	return rand.Intn(5)+1
+	return rand.Intn(5) + 1
 }
 
+//如果a > b，那么一定可以用Randa去实现Randb
 func rand13ToRand5() int {
 	for {
 		r := rand13()
@@ -69,9 +70,10 @@ func rand13ToRand5() int {
 	}
 }
 
+//n * (Randn - 1) + Randn 生成0到n*n的随机数,如果n*n大于要重新生成的随机数范围，生成式加入判断即可
 func rand5ToRand13() int {
 	for {
-		r := 5 * (rand5()-1) + rand5()
+		r := 5*(rand5()-1) + rand5()
 		// fmt.Printf("rand25:%v\n", r)
 		if r > 13 {
 			continue
@@ -82,17 +84,16 @@ func rand5ToRand13() int {
 
 func TestRand(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
-	for i:=0;i<10;i++ {
+	for i := 0; i < 10; i++ {
 		r1 := rand13ToRand5()
 		t.Log(r1)
 	}
-	
-	for i:=0;i<10;i++ {
+
+	for i := 0; i < 10; i++ {
 		r2 := rand5ToRand13()
 		t.Log(r2)
 	}
 }
-
 
 // 拼图游戏，不关⼼图⽚内容，只关注碎⽚的边缘形状是否匹配。
 // 碎⽚最终需拼成完整的矩形，没有残缺，没有多余碎⽚。
@@ -118,7 +119,7 @@ func (p *picture) put(c *chip, r, l int) {
 	p[r][l] = c
 }
 
-func (p *picture) delete(r, l int) *chip{
+func (p *picture) delete(r, l int) *chip {
 	c := p[r][l]
 	p[r][l] = nil
 	return c
@@ -149,14 +150,14 @@ func (p *picture) getDown(r, l int) *chip {
 	return p[l][r+1]
 }
 
-func rmChip(p *picture, r,l int) *chip {
+func rmChip(p *picture, r, l int) *chip {
 	c := p.delete(r, l)
 	fmt.Printf("delete chip:%v from picture[%v][%v]\n", c, r, l)
 	return c
 }
 
 //将碎片放置在12*9的矩阵中，平边必须位于矩阵四边，矩阵内部凸边必须和凹边相邻
-func putChip(c *chip, p *picture, r,l int) bool {
+func putChip(c *chip, p *picture, r, l int) bool {
 	//超出矩阵边界
 	if r > 8 || l > 11 || r < 0 || l < 0 {
 		return false
@@ -246,7 +247,7 @@ func putChip(c *chip, p *picture, r,l int) bool {
 	return false
 }
 
-func judge(row int, col int, c,l,r,u,d *chip) bool {
+func judge(row int, col int, c, l, r, u, d *chip) bool {
 	if l != nil {
 		if l.right == 3 && c.left != 2 {
 			return false
@@ -254,7 +255,7 @@ func judge(row int, col int, c,l,r,u,d *chip) bool {
 		if l.right == 2 && c.left != 3 {
 			return false
 		}
-	}else{
+	} else {
 		//判断左边界碎片
 		if c.left != 1 && col == 0 {
 			return false
@@ -271,7 +272,7 @@ func judge(row int, col int, c,l,r,u,d *chip) bool {
 		if r.left == 3 && c.right != 2 {
 			return false
 		}
-	}else {
+	} else {
 		//判断右边界碎片
 		if col == 11 && c.right != 1 {
 			return false
@@ -287,11 +288,11 @@ func judge(row int, col int, c,l,r,u,d *chip) bool {
 		if u.down == 3 && c.up != 2 {
 			return false
 		}
-	}else {
+	} else {
 		if row == 0 && c.up != 1 {
 			return false
 		}
-		if row !=0 && c.up == 1 {
+		if row != 0 && c.up == 1 {
 			return false
 		}
 	}
@@ -313,13 +314,13 @@ func judge(row int, col int, c,l,r,u,d *chip) bool {
 	return true
 }
 
-func putAndCheck (c *chip, p *picture, r,l int) {
+func putAndCheck(c *chip, p *picture, r, l int) {
 	f := true
-	res := putChip(c,p,r,l)
+	res := putChip(c, p, r, l)
 	if res {
 		//检查矩阵是否填满，此处可以设置一个全局计数变量，记录矩阵中碎片数量，每次放置完碎片变量自增1，然后判断是否等于9*12
-		for i:=0;i<len(*p);i++ {
-			for j:=0;j<len((*p)[0]);j++ {
+		for i := 0; i < len(*p); i++ {
+			for j := 0; j < len((*p)[0]); j++ {
 				if (*p)[i][j] == nil {
 					f = false
 					goto end
@@ -329,7 +330,7 @@ func putAndCheck (c *chip, p *picture, r,l int) {
 	} else {
 		f = false
 	}
-	end:
+end:
 	if f {
 		fmt.Println("恭喜你完成了拼图")
 	} else {
@@ -341,20 +342,20 @@ func TestPicture(t *testing.T) {
 	var p picture
 	//1：平边；2：凸边；3：凹边
 	c := &chip{
-		up:1,
-		down: 2,
-		left: 1,
+		up:    1,
+		down:  2,
+		left:  1,
 		right: 3,
 	}
-	putAndCheck(c,&p,0,0)
+	putAndCheck(c, &p, 0, 0)
 
 	c1 := &chip{
-		up:1,
-		down: 2,
-		left: 3,
+		up:    1,
+		down:  2,
+		left:  3,
 		right: 3,
 	}
-	putAndCheck(c1,&p,0,5)
+	putAndCheck(c1, &p, 0, 5)
 
 	rmChip(&p, 0, 0)
 

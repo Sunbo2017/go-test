@@ -121,6 +121,23 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	return head.Next
 }
 
+//单链表冒泡排序
+func sortList(head *ListNode) *ListNode {
+	// write code here
+	cur := head
+	for cur != nil {
+		cur1 := head
+		for cur1.Next != nil {
+			if cur1.Val > cur1.Next.Val {
+				cur1.Val, cur1.Next.Val = cur1.Next.Val, cur1.Val
+			}
+			cur1 = cur1.Next
+		}
+		cur = cur.Next
+	}
+	return head
+}
+
 // 单链表快排
 func quickSortList(start, end *ListNode) {
 	if start == end || start.Next == end {
@@ -462,7 +479,7 @@ func judgeListBack1(head *ListNode) bool {
 //思路：先找到第m个节点cur和前置节点pre，循环将cur后续节点插入到pre和cur之间
 func reverseListSection(head *ListNode, m, n int) *ListNode {
 	if head == nil || head.Next == nil {
-		return nil
+		return head
 	}
 	//引入头节点，规避m=1时的边界问题
 	h := &ListNode{0, head}
@@ -493,7 +510,7 @@ func TestReverseSection(t *testing.T) {
 	}
 	head.Show()
 	fmt.Println("---------------")
-	res := reverseListSection(head, 1, 5)
+	res := reverseListSection(head, 2, 5)
 	res.Show()
 }
 

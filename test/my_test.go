@@ -694,3 +694,85 @@ func TestProduce(t *testing.T) {
 	ch1 <- 1
 	ch2 <- 2
 }
+
+func printLetterNumber() {
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	letterCh := make(chan bool)
+	numberCh := make(chan bool)
+
+	// 打印字母的协程
+	go func() {
+		for i := 0; i < 26; i++ {
+			if _, ok := <-letterCh; ok {
+				fmt.Printf("%c \n", 'A'+i)
+				numberCh <- true
+			}
+		}
+		close(numberCh)
+		wg.Done()
+	}()
+
+	// 打印数字的协程
+	go func() {
+		for i := 1; i <= 26; i++ {
+			if _, ok := <-numberCh; ok {
+				fmt.Printf("%d \n", i)
+				//不加此判断会出现死锁，因为最后已经没有协程再接收letterCh的数据
+				if i != 26 {
+					letterCh <- true
+				}
+			}
+		}
+		close(letterCh)
+		wg.Done()
+	}()
+
+	letterCh <- true
+	wg.Wait()
+	fmt.Println("finish----")
+}
+
+func TestPrintLN(t *testing.T) {
+	printLetterNumber()
+}
+
+//s1=456783
+//s2=78654977
+func addBigNumber(s1, s2 string) string {
+	l1, l2 := len(s1), len(s2)
+	l := 0
+	if l1 > l2 {
+		l = l1
+	} else {
+		l = l2
+	}
+	list1, list2 := []uint8{}, []uint8{}
+	for i := 0; i < l; i++ {
+		list1 = append(list1, s1[i])
+		list2 = append(list2, s2[i])
+	}
+
+	return ""
+}
+
+//一群朋友组队玩游戏，至少有5组人，一组至少2人，要求：
+//1.每2个人组一队或者3个人组一队，每个人只能加到一个队伍里，不能落单
+//2.2人队和3人队各自的队伍数均不得少于1，队伍中的人不能来自相同组
+//3.随机组队，重复执行程序得到的结果不一样，总队伍数也不能一样
+//4.必须有注释
+//注：要同时满足条件1-4
+
+/*
+举例：
+GroupList=[#小组列表
+['少华','少平','少军','少安','少康'],
+['福军','福堂','福民','福平','福心']
+['小明','小红','小花','小丽','小强'],
+['大壮','大力','大1','大2','大3'],
+['阿花','阿朵','阿蓝','阿紫','阿红'],
+['A','B','C','D','E'],
+['一','二','三','四','五'],
+]
+*/

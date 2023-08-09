@@ -485,6 +485,67 @@ func josephus(n int) int {
 }
 
 func TestJosephus(t *testing.T) {
-	r := josephus(5)
+	r := josephus(11)
+	r1 := lastRemaining(11)
 	t.Log(r)
+	t.Log(r1)
+}
+
+func lastRemaining(n int) int {
+	// create a slice of numbers from 1 to n
+	nums := make([]int, n)
+	for i := 1; i <= n; i++ {
+		nums[i-1] = i
+	}
+
+	// 模拟计数，一直累加
+	count := 1
+	// 记录数组索引，数组会越来越短，所以当index累加到和数组长度相等后要归零
+	index := 0
+
+	for len(nums) > 1 {
+		if count%3 == 0 {
+			nums = append(nums[:index], nums[index+1:]...)
+		} else {
+			index++
+		}
+
+		count++
+		if index >= len(nums) {
+			index = 0
+		}
+	}
+
+	return nums[0]
+}
+
+//给你一个仅有红，白，蓝三种颜色组成的10个条块序列，现需要你将这些条块按照红，白，蓝的顺序排好，
+//可用1代表红色，2代表白色，3代 表蓝色，要求时间复杂度为O(n)。
+func sortColors(nums []int) {
+	// initialize the three pointers
+	start := 0
+	end := len(nums) - 1
+	current := 0
+
+	for current <= end {
+		if nums[current] == 1 {
+			// swap with the start pointer
+			nums[current], nums[start] = nums[start], nums[current]
+			start++
+			current++
+		} else if nums[current] == 2 {
+			// move to the next element
+			current++
+		} else if nums[current] == 3 {
+			// swap with the end pointer
+			nums[current], nums[end] = nums[end], nums[current]
+			end--
+		}
+	}
+}
+
+func TestSortColors(t *testing.T) {
+	arr := []int{2, 3, 1, 1, 3, 2, 1, 2, 3, 1}
+	sortColors(arr)
+	t.Log(arr)
 }
