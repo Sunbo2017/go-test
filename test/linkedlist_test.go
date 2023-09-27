@@ -549,19 +549,19 @@ func oddEvenList(node *ListNode) *ListNode {
 		return node
 	}
 	//提取第二个节点
-	even := node.Next
+	o := node.Next
 	//记录第一个节点
-	odd := node
+	j := node
 	//为偶数节点设置头节点
-	evenHead := even
-	for even != nil && even.Next != nil {
-		odd.Next = even.Next
-		odd = odd.Next
+	oHead := o
+	for o != nil && o.Next != nil {
+		j.Next = o.Next
+		j = j.Next
 
-		even.Next = odd.Next
-		even = even.Next
+		o.Next = j.Next
+		o = o.Next
 	}
-	odd.Next = evenHead
+	j.Next = oHead
 	return node
 }
 

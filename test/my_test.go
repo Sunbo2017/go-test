@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"math/rand"
 	"sort"
 	"sync"
 	"testing"
@@ -437,57 +438,6 @@ func findPrimeBySieve(n int) {
 	fmt.Println("total:", count)
 }
 
-//字节一面
-//一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法
-//递归
-func jumpFloor1(N int) int {
-	if N <= 0 {
-		return 0
-	}
-	if N == 1 || N == 2 {
-		return N
-	}
-	return jumpFloor1(N-1) + jumpFloor1(N-2)
-}
-
-//动态规划
-func jumpFloor2(N int) int {
-	if N <= 0 {
-		return 0
-	}
-	if N == 1 || N == 2 {
-		return N
-	}
-	a, b := 1, 2
-	for i := 3; i <= N; i++ {
-		a, b = b, a+b
-	}
-	return b
-}
-
-// 使用dpTable
-func jumpFloor3(n int) int {
-	if n < 1 {
-		return 0
-	}
-	if n == 1 || n == 2 {
-		return n
-	}
-
-	//存储每一步的结果
-	dpTable := make([]int, n+1)
-
-	// base case
-	dpTable[1] = 1
-	dpTable[2] = 2
-
-	// 状态转移
-	for i := 3; i <= n; i++ {
-		dpTable[i] = dpTable[i-1] + dpTable[i-2]
-	}
-	return dpTable[n]
-}
-
 //金山云面试题：两个协程交替打印奇数偶数，必须保证按序输出
 func TestNum(t *testing.T) {
 	fmt.Println("Hello, World!")
@@ -776,3 +726,371 @@ GroupList=[#小组列表
 ['一','二','三','四','五'],
 ]
 */
+
+var groupList = [][]string{
+	{"少华", "少平", "少军", "少安", "少康"},
+	{"福军", "福堂", "福民", "福平", "福心"},
+	{"小明", "小红", "小花", "小丽", "小强"},
+	{"大壮", "大力", "大1", "大2", "大3"},
+	{"阿花", "阿朵", "阿蓝", "阿紫", "阿红"},
+	{"A", "B", "C", "D", "E"},
+	{"一", "二", "三", "四", "五"},
+}
+
+//横坐标随机数最大值
+var x = len(groupList)
+
+type person struct {
+	name string //姓名
+	x    int    //横坐标
+	y    int    //纵坐标
+}
+
+func (p person) setName() {
+	p.name = groupList[p.x][p.y]
+}
+
+//从groupList中删除已加入新组的person
+func (p person) deleteFromGroup() {
+	list := groupList[p.x]
+	lenY := len(list)
+
+	//如果该组就剩这个小朋友一个人了，需要清空这个组
+	//if lenY == 1 {
+	//	//如果正好是原分组的最后一个组,直接移除这个组
+	//	if p.x == x {
+	//		groupList = groupList[:x-1]
+	//	} else {
+	//		//如果不是最后一个组，用最后一个组替换该分组
+	//		lastGroup := groupList[x-1]
+	//		groupList[p.x] = lastGroup
+	//		//移除最后一个组
+	//		groupList = groupList[:x-1]
+	//	}
+	//}
+
+	if p.y != lenY-1 {
+		//如果该小朋友不是原分组中最后一个人，记录最后一个人
+		lastP := groupList[p.x][lenY-1]
+		//把最后一个人放到这个小朋友的位置
+		groupList[p.x][p.y] = lastP
+		//截取新的小组，长度减一
+		newList := groupList[p.x][:lenY-1]
+		//更新到groupList中
+		groupList[p.x] = newList
+	} else {
+		//如果该小朋友正好是原分组中最后一个人，直接将长度减一
+		newList := groupList[p.x][:lenY-1]
+		//更新到groupList中
+		groupList[p.x] = newList
+	}
+}
+
+//获取新的所有分组
+func getGroupList1() [][]person {
+	rand.Seed(time.Now().UnixNano())
+
+	//计算总人数
+	total := 0
+	for _, v := range groupList {
+		total += len(v)
+	}
+	//最多可分几个组
+	high := total / 2
+	if total%2 > 0 {
+		high += 1
+	}
+	//最少要分几组
+	low := total / 3
+	if total%3 > 0 {
+		low += 1
+	}
+	//随机产生总小组数
+	sum := low + getRandN(high-low)
+	fmt.Printf("total group==%v\n", sum)
+
+	result := make([][]person, sum, sum)
+
+	for total > 0 {
+		//每轮循环会将所有小组中均随机放入一个小朋友
+		for i := 0; i < sum; i++ {
+			if total <= 0 {
+				break
+			}
+			var personList []person
+			if len(result[i]) == 0 {
+				personList = make([]person, 0)
+			} else {
+				personList = result[i]
+			}
+			xIndex := getRandN(x)
+			//检查随机获取的横坐标是否已经存在于该小组中
+			for checkX(xIndex, personList) {
+				xIndex = getRandN(x)
+			}
+			//检查横坐标对应分组是否还有成员，若无成员返回第一个有成员的横坐标，避免随机数一直落在空的分组导致死循环
+			xIndex = checkGroupList(xIndex, personList)
+			//fmt.Printf("x==%v \n", xIndex)
+			yList := groupList[xIndex]
+			//fmt.Printf("ylist==%v \n", yList)
+			//fmt.Printf("glist==%v \n", groupList)
+
+			//如果根据横坐标取到的小组为空，则跳过本次循环
+			if len(yList) == 0 {
+				continue
+			}
+			p := person{
+				x: xIndex,
+				y: getRandN(len(yList)),
+			}
+			p.name = groupList[p.x][p.y]
+
+			personList = append(personList, p)
+
+			result[i] = personList
+
+			//从groupList中删除已加入新组的person
+			p.deleteFromGroup()
+			total--
+		}
+	}
+
+	return result
+}
+
+//获取新的所有分组
+func getGroupList() [][]person {
+	rand.Seed(time.Now().UnixNano())
+
+	var result [][]person
+	//计算总人数
+	total := 0
+	for _, v := range groupList {
+		total += len(v)
+	}
+	//容量，剩余未分组人数
+	capacity := total
+
+	//确保二人组和三人组至少有一个
+	result = append(result, makeGroup1(), makeGroup2())
+	capacity -= 5
+
+	for capacity > 0 {
+		//该小组有几个人
+		c := getRandN(2) + 2
+		personList := make([]person, c)
+		for i := 0; i < c; i++ {
+			xIndex := getRandN(x)
+			//检查随机获取的横坐标是否已经存在于该小组中
+			for checkX(xIndex, personList) {
+				xIndex = getRandN(x)
+			}
+			//检查横坐标对应分组是否还有成员，若无成员返回第一个有成员的横坐标，避免随机数一直落在空的分组导致死循环
+			xIndex = checkGroupList(xIndex, personList)
+
+			fmt.Printf("x==%v \n", xIndex)
+			yList := groupList[xIndex]
+			fmt.Printf("ylist==%v \n", yList)
+			fmt.Printf("glist==%v \n", groupList)
+			p := person{
+				x: xIndex,
+				y: getRandN(len(yList)),
+			}
+			p.setName()
+			personList = append(personList, p)
+
+			//从groupList中删除已加入新组的person
+			p.deleteFromGroup()
+		}
+		result = append(result, personList)
+
+		fmt.Println(result)
+		capacity -= c
+
+		//如果最后只剩下一个小朋友未分组
+		if capacity == 1 {
+			//获取最后一个人的横坐标
+			lastX := 0
+			for i, v := range groupList {
+				if len(v) > 0 {
+					lastX = i
+				}
+			}
+			p := person{x: lastX, y: 0}
+			p.setName()
+			for i, v := range result {
+				if len(v) < 3 {
+					if !checkX(lastX, v) {
+						result[i] = append(result[i], p)
+						return result
+					}
+				}
+			}
+		}
+	}
+
+	return result
+}
+
+func TestGroupList(t *testing.T) {
+	res := getGroupList1()
+	t.Log(len(res))
+	for i, v := range res {
+		t.Logf("group-%v:%+v\n", i, v)
+	}
+}
+
+//检查随机获取的横坐标是否已经存在于该小组中
+func checkX(x int, list []person) bool {
+	for _, v := range list {
+		if x == v.x {
+			return true
+		}
+	}
+
+	return false
+}
+
+//检查横坐标对应分组是否还有成员，若无成员返回第一个有成员的横坐标
+func checkGroupList(x int, pList []person) int {
+	fmt.Printf("leny==%v \n", len(groupList[x]))
+	if len(groupList[x]) == 0 {
+		for i, v := range groupList {
+			if len(v) > 0 {
+				if !checkX(i, pList) {
+					return i
+				}
+			}
+		}
+	}
+	return x
+}
+
+func checkGroupList1(x int) int {
+	fmt.Printf("leny==%v \n", len(groupList[x]))
+	if len(groupList[x]) == 0 {
+		for i, v := range groupList {
+			if len(v) > 0 {
+				return i
+			}
+		}
+	}
+	return x
+}
+
+func makeGroup1() []person {
+	rand.Seed(time.Now().UnixNano())
+
+	var group1 []person
+	lastX := getRandN(x)
+	y := getRandN(len(groupList[lastX]))
+	p1 := person{
+		name: groupList[lastX][y],
+		x:    lastX,
+		y:    y,
+	}
+	group1 = append(group1, p1)
+	p1.deleteFromGroup()
+
+	x1 := getRandN(x)
+	for x1 == lastX {
+		x1 = getRandN(x)
+	}
+	y = getRandN(len(groupList[x1]))
+	p2 := person{
+		name: groupList[x1][y],
+		x:    x1,
+		y:    y,
+	}
+	group1 = append(group1, p2)
+	p2.deleteFromGroup()
+
+	return group1
+}
+
+func makeGroup2() []person {
+	rand.Seed(time.Now().UnixNano())
+
+	var group []person
+	lastX := getRandN(x)
+	y := getRandN(len(groupList[lastX]))
+	p1 := person{
+		name: groupList[lastX][y],
+		x:    lastX,
+		y:    y,
+	}
+	group = append(group, p1)
+	p1.deleteFromGroup()
+
+	x1 := getRandN(x)
+	for x1 == lastX {
+		x1 = getRandN(x)
+	}
+	y = getRandN(len(groupList[x1]))
+	p2 := person{
+		name: groupList[x1][y],
+		x:    x1,
+		y:    y,
+	}
+	group = append(group, p2)
+	p2.deleteFromGroup()
+
+	x2 := getRandN(x)
+	for x2 == lastX || x2 == x1 {
+		x2 = getRandN(x)
+	}
+	y = getRandN(len(groupList[x2]))
+	p3 := person{
+		name: groupList[x2][y],
+		x:    x2,
+		y:    y,
+	}
+	group = append(group, p3)
+	p3.deleteFromGroup()
+
+	return group
+}
+
+func getRandN(n int) int {
+	//if n == 0 {
+	//	return 0
+	//}
+	r := rand.Intn(n)
+	return r
+}
+
+func TestRandN(t *testing.T) {
+	rand.Seed(time.Now().UnixNano())
+
+	r := getRandN(1)
+	t.Log(r)
+}
+
+func findLatestNum(arr []int, n int) []int {
+	l, h := 0, len(arr)
+	for l < h {
+		r := partion1(arr, l, h)
+		if r+1 == n {
+			return arr[:n]
+		}
+		if r+1 > n {
+			h = r - 1
+		} else {
+			l = r + 1
+		}
+	}
+	return arr[:n]
+}
+
+func partion1(arr []int, l, h int) int {
+	pivot := arr[h]
+	i := l - 1
+	for j := l; j < h; j++ {
+		if arr[j] < pivot {
+			i++
+			arr[i], arr[j] = arr[j], arr[i]
+		}
+	}
+	arr[i+1], arr[h] = arr[h], arr[i+1]
+	return i + 1
+}
