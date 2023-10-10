@@ -455,24 +455,22 @@ func judgeSearchTree1(root *treeNode, maxVal, minVal string) bool {
 //中序遍历
 //提前记录前一个节点的值
 var prev string = "min"
-var flag bool = true
 
 func judgeSearchTree2(root *treeNode) bool {
+	if root == nil {
+		return true
+	}
 
-	if root.left != nil && flag {
-		judgeSearchTree2(root.left)
+	if !judgeSearchTree2(root.left) {
+		return false
 	}
 
 	if root.value < prev {
-		flag = false
+		return false
 	}
 	prev = root.value
 
-	if root.right != nil && flag {
-		judgeSearchTree2(root.right)
-	}
-
-	return flag
+	return judgeSearchTree2(root.right)
 }
 
 func TestJudgeSearchTree(t *testing.T) {

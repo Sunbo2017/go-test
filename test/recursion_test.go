@@ -1,6 +1,9 @@
 package test
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 //递归求解斐波那契数列
 func fib(n int) int {
@@ -79,4 +82,24 @@ func jumpFloor3(n int) int {
 		dpTable[i] = dpTable[i-1] + dpTable[i-2]
 	}
 	return dpTable[n]
+}
+
+//棋盘路径问题
+//一个机器人在m×n大小的地图的左下角，坐标(0,0)。
+//机器人每次可以向上或向右移动。机器人要到达地图的右上角（终点）。
+//可以有多少种不同的路径从起点走到终点？
+//到达(x,y)处，可以由(x-1,y)处向右走一步，也可以由(x,y-1)处向上走一步
+//极限场景：只有一行(y=0)或一列(x=0)情况,只有一种走法
+func pathNum(x, y int) int {
+	//如果路径坐标为交叉点位，判断条件为x == 0 || y == 0
+	//如果路径坐标为格子点位，判断条件为x == 1 || y == 1
+	if x == 0 || y == 0 {
+		return 1
+	}
+
+	return pathNum(x, y-1) + pathNum(x-1, y)
+}
+
+func TestPath(t *testing.T) {
+	t.Log(pathNum(2, 2))
 }

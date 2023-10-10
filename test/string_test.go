@@ -247,6 +247,47 @@ func AddStrNumber(a, b string) string {
 	return result
 }
 
+func AddBigStrNumber(a, b string) string {
+	result := ""
+	if len(a) == 0 && len(b) == 0 {
+		return "0"
+	}
+	var index1 = len(a) - 1
+	var index2 = len(b) - 1
+	var up int
+
+	for index1 >= 0 || index2 >= 0 {
+		c1, c2 := 0, 0
+		if index1 >= 0 {
+			c1 = int(a[index1] - '0')
+		}
+		if index2 >= 0 {
+			c2 = int(b[index2] - '0')
+		}
+
+		sum := c1 + c2 + up
+		up = sum / 10
+		c3 := (sum % 10) + '0'
+
+		result = fmt.Sprintf("%c%s", c3, result)
+		index1--
+		index2--
+	}
+	//处理最后的进位值
+	if up == 1 {
+		result = fmt.Sprintf("1%s", result)
+	}
+	start := 0
+	//移除开头的0
+	for i, v := range result {
+		if v-'0' != 0 {
+			start = i
+			break
+		}
+	}
+	return result[start:]
+}
+
 func TestAddStrNumber(t *testing.T) {
 	a, b := '2'-'0', '3'-'0'
 	t.Log('0')
@@ -257,6 +298,13 @@ func TestAddStrNumber(t *testing.T) {
 	str1, str2 := "001234587669003", "00034579" // res=1234587703582
 	res := AddStrNumber(str1, str2)
 	t.Log(res)
+
+	res1 := AddBigStrNumber(str1, str2)
+	t.Log(res1)
+
+	str1, str2 = "1234587669003", "9000000034579"
+	res2 := AddBigStrNumber(str1, str2)
+	t.Log(res2)
 }
 
 //字符串乘法
