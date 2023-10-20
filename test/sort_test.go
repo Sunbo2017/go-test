@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"math/rand"
 	"testing"
 	"time"
 )
@@ -229,29 +228,30 @@ func HeapSort(arr []int) {
 //但是在万级元素下，快排和插入排序并没有拉开太大差距，十万数量级下快排优势明显
 func TestMySort(t *testing.T) {
 	//数量级，控制参与排序的数字总量
-	num := 100000
-	array := []int{}
-	array1 := []int{5, 6, 3, 2, 1, 0, 9, 7, 8, 10, 20, 50, 21, 16, 12, 18, 23, 30, 40, 32}
-	// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8}
-	// 随机种子，不加的话每次产生的随机数相同
-	rand.Seed(time.Now().Unix())
-	for i := 0; i < num; i++ {
-		r := rand.Intn(num)
-		//fmt.Println(r)
-		array = append(array, r)
-	}
+	//num := 100000
+	//array := []int{}
+	//// array := []int{5, 6, 3, 2, 1, 0, 9, 7, 8}
+	//// 随机种子，不加的话每次产生的随机数相同
+	//rand.Seed(time.Now().Unix())
+	//for i := 0; i < num; i++ {
+	//	r := rand.Intn(num)
+	//	//fmt.Println(r)
+	//	array = append(array, r)
+	//}
+	//
+	//fmt.Println(array)
 
-	fmt.Println(array)
+	array1 := []int{5, 6, 3, 2, 1, 0, 9, 7, 8, 10, 20}
 
 	start := time.Now().UnixNano()
 	fmt.Printf("start time: %v \n", start)
 
 	//SelectSort(array) //数量级1000：3000300 ns 2998000 3007200 数量级10000：123961100
 	//Bubble(array) //数量级1000：3000400 ns 3000500 3001600 3000700 2009100 1994100 数量级10000：75448300
-	//InsertSort(array) //数量级1000：2000600 ns 1999600 2001000 2013600 数量级10000：40950500; 100000: 4338811300
+	//InsertSort(array1) //数量级1000：2000600 ns 1999600 2001000 2013600 数量级10000：40950500; 100000: 4338811300
 	// MergeSort(array, 0, len(array)-1) //数量级10000：3008000
 	// HeapSort(array) //数量级10000：2000200
-	// QuickSort(array, 0, len(array)-1) //数量级10000：1000300
+	//QuickSort(array, 0, len(array)-1) //数量级10000：1000300
 	QuickSort(array1, 0, len(array1)-1) //数量级10000：1000300; 100000: 5340800
 
 	fmt.Println(array1)
